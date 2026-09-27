@@ -211,6 +211,13 @@ textarea#text:focus,input#note:focus{outline:3px solid var(--lemon);outline-offs
 @keyframes pop{from{transform:scale(.55) rotate(-7deg);opacity:0}to{transform:none;opacity:1}}
 @keyframes bob{from{transform:translateY(0)}to{transform:translateY(-11px)}}
 
+.iostip{position:fixed;left:12px;right:12px;bottom:calc(14px + env(safe-area-inset-bottom,0px));z-index:990;
+  background:var(--lemon);color:var(--grape-d);border-radius:14px;padding:15px 16px;
+  box-shadow:0 6px 0 #C9A800;max-width:440px;margin:0 auto}
+.iostip b{display:block;font-family:var(--fat);font-weight:400;font-size:17px;line-height:1.05;margin-bottom:6px}
+.iostip span{display:block;font-family:var(--ui);font-weight:500;font-size:13px;line-height:1.4}
+.iostip button{margin-top:11px;font-family:var(--fat);font-size:14px;background:var(--grape-d);color:var(--cream);
+  border-radius:99px;padding:9px 18px}
 .toast{position:fixed;left:50%;bottom:calc(22px + env(safe-area-inset-bottom,0px));
   transform:translateX(-50%) translateY(150%);visibility:hidden;
   background:var(--lemon);color:var(--grape-d);font-family:var(--fat);font-weight:400;font-size:15px;line-height:1;
@@ -1150,7 +1157,9 @@ if ("serviceWorker" in navigator) {
     if (location.hash.indexOf("#p=") !== 0) return null;
     var v = null;
     try { v = b64d(location.hash.slice(3)); } catch(e){ v = null; }
-    history.replaceState(null, "", location.pathname + location.search);
+    // deliberately NOT stripped from the address: iOS gives a home-screen app its
+    // own storage, separate from Safari, so the pairing has to ride in the URL
+    // that the icon launches or the app opens to setup every time.
     return (v && v.u && v.k && v.p && v.me) ? v : null;
   }
   var seeded = readSeed();
@@ -1169,6 +1178,27 @@ if ("serviceWorker" in navigator) {
   var cfg = loadCfg();
   if (cfg) start(cfg);
   else showSetup(seeded);
+
+  // iPhone only: the icon must be made from this page, with the pairing in the
+  // address, because a home-screen app cannot see what Safari saved.
+  (function iosHint(){
+    var standalone = window.navigator.standalone === true ||
+      (window.matchMedia && window.matchMedia("(display-mode: standalone)").matches);
+    var isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+    if (!isIOS || standalone || location.hash.indexOf("#p=") !== 0) return;
+    try { if (localStorage.getItem("racooness.iostip") === "done") return; } catch(e){}
+    var tip = document.createElement("div");
+    tip.className = "iostip";
+    tip.innerHTML = '<b>Add it to your Home Screen from this page.</b>' +
+      '<span>Share button \u2192 Add to Home Screen. Do it here, on this exact address \u2014 ' +
+      'an icon made anywhere else opens to the setup screen.</span>' +
+      '<button type="button">Got it</button>';
+    document.body.appendChild(tip);
+    tip.querySelector("button").addEventListener("click", function(){
+      try { localStorage.setItem("racooness.iostip", "done"); } catch(e){}
+      tip.remove();
+    });
+  })();
 
   el("su-copy").addEventListener("click", function(){
     var sql = el("su-sql").textContent;

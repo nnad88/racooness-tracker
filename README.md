@@ -22,12 +22,19 @@ That's it. No file to edit, no accounts to create, nothing to sign into.
 ## On the phones
 
 The moment setup finishes you get **two links** — one for each phone. Send each one
-to the right phone, then on that phone:
+to the right phone. **Open the link first, then make the icon from that page.**
 
 - **iPhone** — open the link in **Safari** (Chrome on iOS cannot install web apps).
-  Share button → **Add to Home Screen** → **Add**.
+  With that link on screen: Share button → **Add to Home Screen** → **Add**.
 - **Android** — open the link in **Chrome**. It offers **Install app**; if not,
   **⋮** → **Add to Home screen**.
+
+> **Why the order matters on iPhone.** iOS gives a home-screen app its own storage,
+> separate from Safari's. An icon made from the plain address opens to the setup
+> screen every time, because it cannot see what Safari saved. The icon has to be
+> made while the pairing link is in the address bar — then the pairing travels with
+> the icon. If you already made one that opens to setup, delete it and remake it
+> from the link.
 
 Opening the link is the entire setup on the phone. Nothing to type, no sign-in.
 The app knows which raccoon that phone is because the link says so.
