@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
 <title>Racoonness Tracker</title>
 <meta name="theme-color" content="#5A2DD6">
 <meta name="description" content="Hand each other coupons, and rip them off to cash them in.">
@@ -43,6 +43,7 @@ img{max-width:100%}
   --ui:"Fredoka",system-ui,sans-serif;
 }
 *{box-sizing:border-box}
+html{touch-action:manipulation;-webkit-text-size-adjust:100%}
 html,body{height:100%;background:var(--grape)}
 body{margin:0;font-family:var(--ui);color:var(--cream);-webkit-font-smoothing:antialiased}
 button{font:inherit;color:inherit;border:0;background:none;cursor:pointer}
@@ -169,7 +170,7 @@ textarea#text{width:100%;min-height:84px;resize:none;background:var(--cream);col
   padding:12px 13px;font-family:var(--fat);font-weight:400;font-size:21px;line-height:1.02;text-transform:uppercase}
 textarea#text::placeholder{color:rgba(34,34,17,.28)}
 input#note{width:100%;background:var(--grape-d);color:var(--cream);border:2px solid #4A22B8;border-radius:5px;
-  padding:11px 12px;font-family:var(--mono);font-weight:500;font-size:14px}
+  padding:11px 12px;font-family:var(--mono);font-weight:500;font-size:16px}
 input#note::placeholder{color:#9B85D8}
 textarea#text:focus,input#note:focus{outline:3px solid var(--lemon);outline-offset:2px}
 .swatches{display:grid;grid-template-columns:repeat(6,1fr);gap:9px}
@@ -189,7 +190,7 @@ textarea#text:focus,input#note:focus{outline:3px solid var(--lemon);outline-offs
 .customrow{display:grid;grid-template-columns:96px 1fr;gap:8px;margin-top:10px}
 .customrow[hidden]{display:none}
 .customrow input,.customrow select{background:var(--grape-d);color:var(--cream);border:3px solid var(--grape-dd);
-  border-radius:99px;padding:11px 14px;font-family:var(--fat);font-weight:400;font-size:15px;width:100%}
+  border-radius:99px;padding:11px 14px;font-family:var(--fat);font-weight:400;font-size:16px;width:100%}
 .customrow select{appearance:none;-webkit-appearance:none;text-align:center}
 .customrow input:focus,.customrow select:focus{outline:3px solid var(--lemon);outline-offset:2px}
 .give{width:100%;font-family:var(--fat);font-weight:400;font-size:22px;line-height:1;background:var(--hot);
@@ -305,7 +306,7 @@ textarea#text:focus,input#note:focus{outline:3px solid var(--lemon);outline-offs
 .hint{color:#A992E8;letter-spacing:0;text-transform:none;font-weight:400}
 .nb{font-family:var(--mono);font-size:10.5px;line-height:1.5;color:#A992E8;margin:-4px 0 0}
 .setup input{width:100%;background:var(--grape-d);color:var(--cream);border:3px solid var(--grape-dd);
-  border-radius:8px;padding:12px;font-family:var(--mono);font-size:14px;margin-bottom:13px}
+  border-radius:8px;padding:12px;font-family:var(--mono);font-size:16px;margin-bottom:13px}
 .setup input:focus{outline:3px solid var(--lemon);outline-offset:2px}
 .whopick{display:grid;grid-template-columns:1fr 1fr;gap:8px}
 .whopick button{font-family:var(--fat);font-weight:400;font-size:15px;background:var(--grape-d);color:#B49BF5;
@@ -327,7 +328,7 @@ textarea#text:focus,input#note:focus{outline:3px solid var(--lemon);outline-offs
   color:var(--lemon);margin:4px 0 6px}
 .warn{font-family:var(--mono);font-size:10px;line-height:1.5;color:#A992E8;margin:14px 0 2px}
 .linkbox{width:100%;background:var(--grape-dd);color:#C8B6FF;border:0;border-radius:8px;padding:11px;
-  font-family:var(--mono);font-size:11px;margin-bottom:12px}
+  font-family:var(--mono);font-size:16px;margin-bottom:12px}
 .pick{width:100%;font-family:var(--fat);font-weight:400;font-size:17px;line-height:1;border-radius:11px;
   padding:14px;margin-bottom:9px;text-align:center}
 .pick.s{background:var(--cream);color:var(--grape-d);box-shadow:0 4px 0 #C9BFAE}
@@ -534,6 +535,12 @@ create policy "pair only" on public.tickets
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
 <script>
+// iOS pinch-zoom comes through as gesture events — a mis-swipe while ripping a
+// coupon should not leave the app zoomed in
+["gesturestart","gesturechange","gestureend"].forEach(function(evt){
+  document.addEventListener(evt, function(e){ e.preventDefault(); }, { passive:false });
+});
+document.addEventListener("dblclick", function(e){ e.preventDefault(); }, { passive:false });
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", function(){ navigator.serviceWorker.register("sw.js").catch(function(){}); });
 }
