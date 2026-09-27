@@ -1,0 +1,1227 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Racooness Tracker</title>
+<meta name="theme-color" content="#5A2DD6">
+<meta name="description" content="Hand each other tickets, and tear them off to cash them in.">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Racooness">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<link rel="icon" href="icons/icon-192.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bagel+Fat+One&family=Caveat:wght@600;700&family=DM+Mono:wght@400;500&family=Fredoka:wght@400;500;600;700&display=swap">
+<style>
+html,body{margin:0;padding:0}
+:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+img{max-width:100%}
+[hidden]{display:none!important}
+
+:root{
+  --cut-l:radial-gradient(circle 7px at 0 8px,#0000 98%,#000) 0 0/100% 16px repeat-y,
+          radial-gradient(circle 10px at 100% 0,#0000 98%,#000) 0 0/100% 100% no-repeat,
+          radial-gradient(circle 10px at 100% 100%,#0000 98%,#000) 0 0/100% 100% no-repeat;
+  --cut-r:radial-gradient(circle 7px at 100% 8px,#0000 98%,#000) 0 0/100% 16px repeat-y,
+          radial-gradient(circle 10px at 0 0,#0000 98%,#000) 0 0/100% 100% no-repeat,
+          radial-gradient(circle 10px at 0 100%,#0000 98%,#000) 0 0/100% 100% no-repeat;
+  color-scheme: dark;
+  --grape:#5A2DD6;
+  --grape-d:#2A0F70;
+  --grape-dd:#1D0A52;
+  --cream:#FFF6E9;
+  --lemon:#FFD93D;
+  --hot:#FF4FA3;
+  --ink:#141414;
+  --dead:#8B86A6;
+  --dead-ink:#3A3550;
+  --mono:"DM Mono",ui-monospace,Menlo,monospace;
+  --fat:"Bagel Fat One",system-ui,sans-serif;
+  --ui:"Fredoka",system-ui,sans-serif;
+  --hand:"Caveat",cursive;
+}
+*{box-sizing:border-box}
+html,body{height:100%;background:var(--grape)}
+body{margin:0;font-family:var(--ui);color:var(--cream);-webkit-font-smoothing:antialiased}
+button{font:inherit;color:inherit;border:0;background:none;cursor:pointer}
+input,textarea{font:inherit}
+#app{max-width:480px;margin:0 auto;min-height:100%;display:flex;flex-direction:column}
+
+/* ---------- title ---------- */
+.top{padding:16px 13px 0}
+.toprow{display:flex;justify-content:flex-end;margin-bottom:6px}
+.who{font-family:var(--mono);font-size:9.5px;letter-spacing:.08em;background:var(--grape-d);color:var(--lemon);
+  border-radius:99px;padding:6px 11px;text-transform:uppercase;white-space:nowrap;border:2px solid var(--grape-dd)}
+.who:hover{background:var(--hot);color:var(--cream)}
+h1{font-family:var(--fat);font-weight:400;margin:0;color:var(--cream);line-height:.78;
+  font-size:clamp(52px,17.6vw,88px);letter-spacing:-.018em;
+  text-shadow:5px 5px 0 var(--hot),10px 10px 0 var(--grape-dd)}
+h1 span{display:block}
+h1 .b{color:var(--lemon)}
+
+/* ---------- controls ---------- */
+.bar{display:flex;gap:9px;padding:22px 13px 0;align-items:center}
+.seg{flex:1;font-family:var(--fat);font-weight:400;font-size:clamp(17px,5.4vw,22px);line-height:1;
+  background:var(--grape-d);color:#B49BF5;border-radius:99px;padding:15px 8px;border:3px solid var(--grape-dd)}
+.seg[aria-pressed="true"]{background:var(--cream);color:var(--grape-d);border-color:var(--cream)}
+.add{flex:none;width:58px;height:58px;border-radius:50%;background:var(--hot);color:var(--cream);
+  font-family:var(--fat);font-weight:400;font-size:32px;line-height:1;box-shadow:0 5px 0 #C22C74;
+  display:grid;place-items:center;padding-bottom:4px}
+.add:active{transform:translateY(3px);box-shadow:0 2px 0 #C22C74}
+.banner{margin:14px 13px 0;background:var(--grape-d);border:2px solid var(--grape-dd);border-radius:9px;
+  padding:9px 11px;font-family:var(--mono);font-size:9.5px;line-height:1.5;color:#C3ADFF}
+.banner b{color:var(--lemon);font-weight:400}
+
+main{flex:1;position:relative;z-index:0;padding:20px 13px calc(40px + env(safe-area-inset-bottom,0px));overflow-x:clip}
+
+/* ---------- ticket ---------- */
+.tk{position:relative;margin-bottom:-9px;--rip:0}
+.tk .card{display:flex;color:var(--ink);position:relative}
+.tk .body{flex:1;min-width:0;background:var(--tc,#FF6B6B);display:flex;align-items:flex-start;gap:10px;
+  padding:12px 10px 12px 14px;min-height:112px;transition:transform .5s ease-in,opacity .5s;
+  -webkit-mask:var(--cut-l);-webkit-mask-composite:source-in;mask:var(--cut-l);mask-composite:intersect}
+.tk .txt{flex:1;min-width:0;display:flex;flex-direction:column}
+.tk .line{font-family:var(--fat);font-weight:400;font-size:clamp(19px,5.6vw,24px);line-height:.92;margin:0;
+  text-transform:uppercase;word-break:break-word;letter-spacing:-.01em}
+.tk .line i{font-style:normal;display:block;margin-top:1px}
+.tk .doodle{width:clamp(56px,17vw,80px);height:auto;aspect-ratio:1;flex:none;margin:1px 0 0;display:block;opacity:.92}
+.tk .doodle path,.tk .doodle circle{stroke:var(--ink);fill:none;stroke-width:5.5;stroke-linecap:round;stroke-linejoin:round}
+.tk .note{font-family:var(--hand);font-weight:700;font-size:clamp(15px,4.4vw,18px);line-height:1.06;margin:6px 0 0;opacity:.9}
+.tk .meta{font-family:var(--mono);font-weight:500;font-size:9px;letter-spacing:.11em;text-transform:uppercase;
+  opacity:.6;margin-top:auto;padding-top:10px;display:flex;flex-direction:column;gap:3px;line-height:1.3}
+.tk .meta b{font-weight:500;opacity:1;font-size:10px;letter-spacing:.06em}
+.tk.gone .meta b{font-size:9px}
+
+/* right rail = the tear-off */
+.tk .rail{width:clamp(82px,27%,132px);flex:none;position:relative;display:flex;align-items:center;justify-content:center;
+  border-left:4px dashed rgba(20,20,20,.38);touch-action:none;user-select:none;-webkit-user-select:none;
+  background:var(--tc,#FF6B6B);transition:transform .22s cubic-bezier(.3,1.4,.5,1);
+  -webkit-mask:var(--cut-r);-webkit-mask-composite:source-in;mask:var(--cut-r);mask-composite:intersect}
+.tk .rail.dragging{transition:none}
+.tk .rail .vert{writing-mode:vertical-rl;font-family:var(--mono);font-size:11px;font-weight:500;
+  letter-spacing:.14em;text-transform:uppercase;white-space:nowrap;display:flex;align-items:center;
+  justify-content:center;padding:8px 0}
+.tk .rail .vert b{font-weight:500}
+.tk .rail .vert em{font-style:normal;font-family:var(--fat);font-size:clamp(22px,7vw,30px);letter-spacing:0;text-transform:uppercase}
+.tk.torn .rail{transform:translateX(86%) rotate(10deg);opacity:0;transition:transform .5s ease-in,opacity .5s}
+.tk.torn .body{transform:translateX(-32%) rotate(-7deg);opacity:0}
+
+/* given: no tear, rail is flat info */
+.tk.given .rail{cursor:default}
+
+/* dead pile */
+#dead{display:grid;grid-template-columns:1fr 1fr;gap:10px 9px}
+.tk .del{position:absolute;top:-9px;right:-4px;z-index:8;font-family:var(--fat);font-weight:400;font-size:15px;
+  line-height:1;background:var(--grape-dd);color:var(--cream);border:3px solid var(--grape);border-radius:99px;
+  width:34px;height:34px;display:grid;place-items:center;padding-bottom:2px}
+.tk .del.arm{width:auto;height:auto;padding:8px 13px;font-size:14px;background:#E8156B;border-color:var(--cream)}
+.tk.gone{margin:0!important}
+.tk.gone .card{color:var(--dead-ink)}
+.tk.gone .body{background:var(--dead)}
+.tk.gone .rail{background:var(--dead);border-left-color:rgba(58,53,80,.42);width:30px;border-left-width:3px}
+.tk.gone .rail .vert{font-size:8px;letter-spacing:.1em;gap:0;padding:4px 0}
+.tk.gone .body{padding:11px 6px 12px 11px;min-height:0;gap:0}
+.tk.gone .line{font-size:15px;line-height:.95;text-decoration:line-through;text-decoration-thickness:2px}
+.tk.gone .line i,.tk.gone .doodle,.tk.gone .note{display:none}
+.tk.gone .meta{margin-top:6px;font-size:7.5px;letter-spacing:.08em;white-space:normal;line-height:1.35}
+
+/* ---------- section head ---------- */
+.shead{display:flex;align-items:center;gap:10px;margin:34px 0 15px}
+.shead b{font-family:var(--fat);font-weight:400;font-size:20px;line-height:1;color:var(--cream);white-space:nowrap}
+.shead i{flex:1;height:4px;background:var(--grape-d);font-style:normal}
+.shead span{font-family:var(--mono);font-size:9px;letter-spacing:.1em;color:#A992E8;white-space:nowrap}
+
+.empty{background:var(--grape-d);border:3px dashed #4A22B8;border-radius:13px;padding:28px 18px;text-align:center}
+.empty b{display:block;font-family:var(--fat);font-weight:400;font-size:20px;line-height:1.05;color:var(--lemon);margin-bottom:7px}
+.empty span{font-size:13.5px;line-height:1.45;color:#C3ADFF;font-weight:500}
+
+/* ---------- overlay ---------- */
+.ov{position:fixed;inset:0;z-index:900;background:var(--grape);overflow-y:auto;
+  padding:calc(16px + env(safe-area-inset-top,0px)) 16px calc(28px + env(safe-area-inset-bottom,0px))}
+.ov[hidden]{display:none}
+.ov .inner{max-width:480px;margin:0 auto}
+.ov #preview{margin-bottom:22px}
+.ovhead{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:16px}
+.ovhead h2{font-family:var(--fat);font-weight:400;font-size:34px;line-height:.88;margin:0;color:var(--cream);
+  text-shadow:3px 3px 0 var(--hot)}
+.x{font-family:var(--fat);font-size:21px;line-height:1;background:var(--grape-d);color:var(--cream);
+  border-radius:50%;width:46px;height:46px;flex:none}
+.field{margin-bottom:15px}
+.field>label,.flab{display:block;font-family:var(--mono);font-weight:500;font-size:11px;letter-spacing:.16em;
+  text-transform:uppercase;color:var(--lemon);margin-bottom:9px}
+textarea#text{width:100%;min-height:84px;resize:none;background:var(--cream);color:#221;border-radius:5px;border:0;
+  padding:12px 13px;font-family:var(--fat);font-weight:400;font-size:21px;line-height:1.02;text-transform:uppercase}
+textarea#text::placeholder{color:rgba(34,34,17,.28)}
+input#note{width:100%;background:var(--grape-d);color:var(--cream);border:2px solid #4A22B8;border-radius:5px;
+  padding:11px 12px;font-family:var(--hand);font-weight:700;font-size:18px}
+input#note::placeholder{color:#9B85D8}
+textarea#text:focus,input#note:focus{outline:3px solid var(--lemon);outline-offset:2px}
+.swatches{display:grid;grid-template-columns:repeat(6,1fr);gap:9px}
+.sw{width:100%;aspect-ratio:1;border-radius:50%;border:4px solid transparent;position:relative}
+.icons{display:grid;grid-template-columns:repeat(6,1fr);gap:8px}
+.ic{aspect-ratio:1;background:var(--grape-d);border:3px solid var(--grape-dd);border-radius:13px;
+  display:grid;place-items:center;padding:6px}
+.ic svg{width:100%;height:100%;display:block}
+.ic svg path,.ic svg circle{stroke:#B49BF5;fill:none;stroke-width:7;stroke-linecap:round;stroke-linejoin:round}
+.ic[aria-pressed="true"]{background:var(--cream);border-color:var(--cream)}
+.ic[aria-pressed="true"] svg path,.ic[aria-pressed="true"] svg circle{stroke:var(--grape-d)}
+.sw[aria-pressed="true"]{border-color:var(--cream);box-shadow:0 0 0 3px var(--grape-d)}
+.chips{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.chip{font-family:var(--fat);font-weight:400;font-size:15px;background:var(--grape-d);color:#B49BF5;
+  border-radius:99px;padding:11px 6px;border:3px solid var(--grape-dd);text-align:center}
+.chip[aria-pressed="true"]{background:var(--lemon);color:var(--grape-d);border-color:var(--lemon)}
+.give{width:100%;font-family:var(--fat);font-weight:400;font-size:22px;line-height:1;background:var(--hot);
+  color:var(--cream);border-radius:13px;padding:16px 14px;box-shadow:0 5px 0 #C22C74;margin-top:2px}
+.give:active{transform:translateY(3px);box-shadow:0 2px 0 #C22C74}
+.give[disabled]{background:#4A22B8;color:#8A74C9;box-shadow:0 5px 0 #38198F;cursor:not-allowed}
+
+/* ---------- persona sheet + toast ---------- */
+.sheet{position:fixed;inset:0;z-index:950;background:rgba(29,10,82,.92);display:grid;place-items:center;padding:22px}
+.sheet .box{background:var(--grape-d);border-radius:18px;padding:22px 18px;width:100%;max-width:340px;border:4px solid var(--lemon)}
+.sheet h2{font-family:var(--fat);font-weight:400;font-size:26px;line-height:.98;margin:0 0 6px;color:var(--cream)}
+.sheet p{margin:0 0 16px;font-size:13px;line-height:1.45;color:#C3ADFF;font-weight:500}
+.pick{width:100%;font-family:var(--fat);font-weight:400;font-size:19px;line-height:1;border-radius:11px;
+  padding:15px 14px;margin-bottom:9px;text-align:left}
+.pick.s{background:var(--cream);color:var(--grape-d);box-shadow:0 4px 0 #C9BFAE}
+.pick.p{background:var(--hot);color:var(--cream);box-shadow:0 4px 0 #C22C74}
+.pick:active{transform:translateY(2px)}
+.sheet .cancel{display:block;width:100%;text-align:center;font-family:var(--mono);font-size:10px;
+  letter-spacing:.14em;text-transform:uppercase;color:#A992E8;padding:10px 0 0}
+.enjoy{position:fixed;inset:0;z-index:990;background:var(--hot);display:grid;place-items:center;
+  padding:26px;text-align:center;cursor:pointer}
+.enjoy[hidden]{display:none}
+.enjoy h2{font-family:var(--fat);font-weight:400;margin:0;color:var(--lemon);line-height:.82;
+  font-size:clamp(76px,26vw,150px);letter-spacing:-.02em;
+  text-shadow:6px 6px 0 var(--grape),12px 12px 0 var(--grape-dd);animation:pop .5s cubic-bezier(.2,1.7,.5,1) both}
+.enjoy p{font-family:var(--fat);font-weight:400;font-size:clamp(19px,5.6vw,26px);line-height:1.02;
+  color:var(--cream);margin:22px 0 0;text-transform:uppercase;text-wrap:balance;
+  animation:pop .5s .12s cubic-bezier(.2,1.7,.5,1) both}
+.enjoy small{display:block;font-family:var(--mono);font-size:11px;letter-spacing:.2em;text-transform:uppercase;
+  color:rgba(255,246,233,.75);margin-top:20px}
+.enjoy .pips{display:flex;gap:9px;justify-content:center;margin-top:22px}
+.enjoy .pips i{width:15px;height:15px;border-radius:50%;background:var(--cream);display:block;
+  animation:bob .7s ease-in-out infinite alternate both}
+.enjoy .pips i:nth-child(2){background:var(--lemon);animation-delay:.09s}
+.enjoy .pips i:nth-child(3){background:var(--grape);animation-delay:.18s}
+.enjoy .pips i:nth-child(4){background:var(--cream);animation-delay:.27s}
+.enjoy .pips i:nth-child(5){background:var(--lemon);animation-delay:.36s}
+@keyframes pop{from{transform:scale(.55) rotate(-7deg);opacity:0}to{transform:none;opacity:1}}
+@keyframes bob{from{transform:translateY(0)}to{transform:translateY(-11px)}}
+
+.toast{position:fixed;left:50%;bottom:calc(22px + env(safe-area-inset-bottom,0px));
+  transform:translateX(-50%) translateY(150%);visibility:hidden;
+  background:var(--lemon);color:var(--grape-d);font-family:var(--fat);font-weight:400;font-size:15px;line-height:1;
+  padding:13px 18px;border-radius:99px;z-index:980;box-shadow:0 5px 0 #C9A800;
+  transition:transform .3s cubic-bezier(.3,1.4,.5,1),visibility .3s;max-width:88vw;overflow:hidden;
+  text-overflow:ellipsis;white-space:nowrap}
+.toast.up{transform:translateX(-50%) translateY(0);visibility:visible}
+
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+*:focus-visible{outline:3px solid var(--lemon);outline-offset:3px}
+
+/* ---------- setup ---------- */
+.setup{position:fixed;inset:0;z-index:1000;background:var(--grape);overflow-y:auto;
+  padding:calc(20px + env(safe-area-inset-top,0px)) 16px calc(40px + env(safe-area-inset-bottom,0px))}
+.setup[hidden]{display:none}
+.setupbox{max-width:460px;margin:0 auto}
+.gatetitle{font-family:var(--fat);font-weight:400;margin:0 0 16px;color:var(--cream);line-height:.78;
+  font-size:clamp(42px,12.5vw,66px);letter-spacing:-.018em;
+  text-shadow:4px 4px 0 var(--hot),8px 8px 0 var(--grape-dd)}
+.gatetitle span{display:block}
+.gatetitle .b{color:var(--lemon)}
+.steplede{font-size:14px;line-height:1.5;color:#D6C6FF;font-weight:500;margin:0 0 24px}
+.step{display:flex;gap:13px;align-items:flex-start;margin-bottom:22px}
+.step>b{flex:none;width:34px;height:34px;border-radius:50%;background:var(--lemon);color:var(--grape-d);
+  font-family:var(--fat);font-weight:400;font-size:17px;display:grid;place-items:center;padding-bottom:2px}
+.step>div{flex:1;min-width:0}
+.step h3{font-family:var(--fat);font-weight:400;font-size:19px;line-height:1;margin:6px 0 7px;color:var(--cream)}
+.step p{font-size:13.5px;line-height:1.5;color:#D6C6FF;font-weight:500;margin:0 0 10px}
+.step em{font-style:normal;color:var(--lemon);font-weight:600}
+.step a{color:var(--lemon)}
+.sql{background:var(--grape-dd);color:#C8B6FF;font-family:var(--mono);font-size:10px;line-height:1.5;
+  padding:12px;border-radius:9px;overflow-x:auto;margin:0 0 9px;white-space:pre;-webkit-user-select:all;user-select:all}
+.mini{font-family:var(--ui);font-weight:600;font-size:13px;background:var(--grape-d);color:var(--cream);
+  border:3px solid var(--grape-dd);border-radius:99px;padding:9px 15px}
+.setup input{width:100%;background:var(--grape-d);color:var(--cream);border:3px solid var(--grape-dd);
+  border-radius:8px;padding:12px;font-family:var(--mono);font-size:14px;margin-bottom:13px}
+.setup input:focus{outline:3px solid var(--lemon);outline-offset:2px}
+.whopick{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.whopick button{font-family:var(--fat);font-weight:400;font-size:15px;background:var(--grape-d);color:#B49BF5;
+  border:3px solid var(--grape-dd);border-radius:99px;padding:13px 8px;line-height:1.05}
+.whopick button[aria-pressed="true"]{background:var(--cream);color:var(--grape-d);border-color:var(--cream)}
+.gateerr{font-family:var(--mono);font-size:12px;line-height:1.5;color:var(--grape-d);
+  background:var(--lemon);border-radius:9px;padding:12px 13px;margin:16px 0 0}
+.gateerr[hidden]{display:none}
+#app[hidden]{display:none}
+
+/* ---------- settings sheet ---------- */
+.sheet{position:fixed;inset:0;z-index:950;background:rgba(29,10,82,.92);display:grid;place-items:center;
+  padding:22px;overflow-y:auto}
+.sheet .box{background:var(--grape-d);border-radius:18px;padding:22px 18px;width:100%;max-width:360px;
+  border:4px solid var(--lemon)}
+.sheet h2{font-family:var(--fat);font-weight:400;font-size:26px;line-height:.98;margin:0 0 8px;color:var(--cream)}
+.sheet p{margin:0 0 14px;font-size:13px;line-height:1.45;color:#C3ADFF;font-weight:500}
+.lnklab{display:block;font-family:var(--mono);font-size:9px;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--lemon);margin:4px 0 6px}
+.warn{font-family:var(--mono);font-size:10px;line-height:1.5;color:#A992E8;margin:14px 0 2px}
+.linkbox{width:100%;background:var(--grape-dd);color:#C8B6FF;border:0;border-radius:8px;padding:11px;
+  font-family:var(--mono);font-size:11px;margin-bottom:12px}
+.pick{width:100%;font-family:var(--fat);font-weight:400;font-size:17px;line-height:1;border-radius:11px;
+  padding:14px;margin-bottom:9px;text-align:center}
+.pick.s{background:var(--cream);color:var(--grape-d);box-shadow:0 4px 0 #C9BFAE}
+.pick.p{background:var(--hot);color:var(--cream);box-shadow:0 4px 0 #C22C74}
+.pick:active{transform:translateY(2px)}
+.sheet .cancel{display:block;width:100%;text-align:center;font-family:var(--mono);font-size:10px;
+  letter-spacing:.14em;text-transform:uppercase;color:#A992E8;padding:11px 0 0}
+.sheet .cancel.danger{color:#FF7BA8}
+.sheet .cancel.arm{color:var(--lemon)}
+</style>
+</head>
+<body>
+<div class="setup" id="setup" hidden>
+  <div class="setupbox">
+    <h1 class="gatetitle"><span>Racooness</span><span class="b">Tracker</span></h1>
+    <p class="steplede">Do this once, on a laptop — it is easier here. Takes about three minutes.
+      At the end you get one link per phone, and opening that link is the whole setup on them.</p>
+
+    <div class="step">
+      <b>1</b>
+      <div>
+        <h3>Make a place for the tickets</h3>
+        <p>Open <a href="https://supabase.com/dashboard" target="_blank" rel="noopener">supabase.com</a>,
+          sign up free, and hit <em>New project</em>. Any name, any region. It takes about two
+          minutes to build.</p>
+      </div>
+    </div>
+
+    <div class="step">
+      <b>2</b>
+      <div>
+        <h3>Paste this once</h3>
+        <p>In Supabase: <em>SQL Editor</em> → <em>New query</em> → paste → <em>Run</em>.</p>
+        <pre class="sql" id="su-sql">create table if not exists public.tickets (
+  id         text primary key,
+  pair       text not null,
+  text       text not null,
+  note       text,
+  from_user  text not null,
+  to_user    text not null,
+  color      text,
+  icon       text,
+  serial     text,
+  issued_at  timestamptz not null default now(),
+  expires_at timestamptz not null,
+  state      text not null default 'live',
+  torn_at    timestamptz
+);
+
+alter table public.tickets enable row level security;
+
+drop policy if exists "pair only" on public.tickets;
+create policy "pair only" on public.tickets
+  for all to anon
+  using      (pair = current_setting('request.headers', true)::json ->> 'x-pair')
+  with check (pair = current_setting('request.headers', true)::json ->> 'x-pair');</pre>
+        <button class="mini" id="su-copy" type="button">Copy the SQL</button>
+      </div>
+    </div>
+
+    <div class="step">
+      <b>3</b>
+      <div>
+        <h3>Bring back two things</h3>
+        <p>In Supabase: <em>Project Settings</em> → <em>Data API</em>.</p>
+        <label class="flab" for="su-url">Project URL</label>
+        <input id="su-url" type="url" inputmode="url" autocomplete="off" autocapitalize="off"
+               spellcheck="false" placeholder="https://abcdefgh.supabase.co">
+        <label class="flab" for="su-key">Anon / publishable key</label>
+        <input id="su-key" type="text" autocomplete="off" autocapitalize="off"
+               spellcheck="false" placeholder="eyJhbGciOi…">
+      </div>
+    </div>
+
+    <div class="step">
+      <b>4</b>
+      <div>
+        <h3>Which one are you?</h3>
+        <div class="whopick" id="su-who">
+          <button type="button" data-who="stinky" aria-pressed="true">Stinky Racoon</button>
+          <button type="button" data-who="pinky" aria-pressed="false">Pinkylocious</button>
+        </div>
+      </div>
+    </div>
+
+    <button class="give" id="su-go" type="button">Start</button>
+    <p class="gateerr" id="setup-err" hidden></p>
+  </div>
+</div>
+
+<div id="app" hidden>
+  <div class="top">
+    <div class="toprow"><button class="who" id="who" type="button">you are —</button></div>
+    <h1><span>Racooness</span><span class="b">Tracker</span></h1>
+  </div>
+
+  <div class="bar">
+    <button class="seg" id="seg-yours" type="button" aria-pressed="true">Yours</button>
+    <button class="seg" id="seg-given" type="button" aria-pressed="false">Given</button>
+    <button class="add" id="open-send" type="button" aria-label="Send a ticket">+</button>
+  </div>
+  <div id="banner"></div>
+
+  <main>
+    <div id="live"></div>
+    <div id="deadwrap" hidden>
+      <div class="shead"><b>Used &amp; gone</b><i></i><span id="deadcount"></span></div>
+      <div id="dead"></div>
+    </div>
+  </main>
+</div>
+
+<div class="ov" id="ov" hidden role="dialog" aria-modal="true" aria-labelledby="ovtitle">
+  <div class="inner">
+    <div class="ovhead">
+      <h2 id="ovtitle">Send a<br>ticket</h2>
+      <button class="x" id="ov-close" type="button" aria-label="Close">✕</button>
+    </div>
+
+    <div class="tk" id="preview" aria-hidden="true">
+      <div class="card">
+        <div class="body">
+          <div class="txt">
+            <p class="line" id="pv-line">Your ticket<i id="pv-i">ticket</i></p>
+            <p class="note" id="pv-note" hidden></p>
+            <div class="meta" id="pv-meta"><span>From — · No.0000</span></div>
+          </div>
+          <svg class="doodle" id="pv-dd" viewBox="0 0 100 100" aria-hidden="true"></svg>
+        </div>
+        <div class="rail"><span class="vert"><em>Tear</em></span></div>
+      </div>
+    </div>
+
+    <div class="field">
+      <label for="text">What's the ticket</label>
+      <textarea id="text" maxlength="60" placeholder="Back rub, 20 minutes" autocomplete="off"></textarea>
+    </div>
+    <div class="field">
+      <label for="note">Small print (optional)</label>
+      <input id="note" type="text" maxlength="80" placeholder="You pick the day" autocomplete="off">
+    </div>
+    <div class="field">
+      <span class="flab" id="lbl-ic">Icon</span>
+      <div class="icons" role="group" aria-labelledby="lbl-ic" id="icons"></div>
+    </div>
+    <div class="field">
+      <span class="flab" id="lbl-col">Colour</span>
+      <div class="swatches" role="group" aria-labelledby="lbl-col" id="swatches"></div>
+    </div>
+    <div class="field">
+      <span class="flab" id="lbl-dur">Good for</span>
+      <div class="chips" role="group" aria-labelledby="lbl-dur" id="durs"></div>
+    </div>
+    <button class="give" id="give" type="button" disabled>Hand it over</button>
+  </div>
+</div>
+
+<div class="enjoy" id="enjoy" hidden role="alertdialog" aria-labelledby="enjoy-h">
+  <div>
+    <h2 id="enjoy-h">Enjoy</h2>
+    <p id="enjoy-what"></p>
+    <div class="pips" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div>
+    <small>Tap anywhere</small>
+  </div>
+</div>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", function(){ navigator.serviceWorker.register("sw.js").catch(function(){}); });
+}
+</script>
+<script type="module">
+
+(function(){
+  "use strict";
+
+  var PEOPLE = {
+    stinky:{ name:"Stinky Racoon", short:"Stinky" },
+    pinky: { name:"Pinkylocious",  short:"Pinky"  }
+  };
+  var other = function(id){ return id === "stinky" ? "pinky" : "stinky"; };
+
+  var COLORS = ["#FF6B6B","#FFB3C7","#FFE66D","#A8C49A","#7ED8E8","#C9A8FF",
+                "#FFA65C","#96E6B3","#FF9FB2","#D6E85C","#8FB8FF","#F0C9A0"];
+
+  var DURS = [
+    { id:"d1", label:"1 day",   ms:86400000 },
+    { id:"d3", label:"3 days",  ms:259200000 },
+    { id:"w1", label:"1 week",  ms:604800000 },
+    { id:"m1", label:"1 mo",    ms:2592000000 },
+    { id:"m2", label:"2 mo",    ms:5184000000 },
+    { id:"m3", label:"3 mo",    ms:7776000000 }
+  ];
+
+  var ICONS = [
+    { id:"smile", svg:'<circle cx="50" cy="50" r="33"/><circle cx="38" cy="42" r="3"/><circle cx="62" cy="42" r="3"/><path d="M34 60c9 10 23 10 32 0"/>' },
+    { id:"wink",  svg:'<circle cx="50" cy="50" r="33"/><path d="M32 42c4-5 9-5 13 0"/><circle cx="63" cy="42" r="3"/><path d="M36 62c8 7 18 6 26-2"/>' },
+    { id:"lips",  svg:'<path d="M11 50c14-17 28-17 39-7 11-10 25-10 39 7-14 19-28 26-39 26S25 69 11 50z"/><path d="M11 50h78"/>' },
+    { id:"peace", svg:'<path d="M40 54V19M58 56V24"/><path d="M27 52c-6 8-4 20 4 26 9 7 24 8 33 1 8-6 11-16 10-27l-2-16"/><path d="M27 52l-4-12"/>' },
+    { id:"point", svg:'<path d="M46 52V16"/><path d="M33 56c-6 7-5 19 3 25 9 7 24 8 33 1 7-6 10-15 9-25l-2-14"/><path d="M58 47V33M70 50V38"/>' },
+    { id:"star",  svg:'<path d="M50 10l12 27 29 3-22 20 6 29-25-15-25 15 6-29-22-20 29-3z"/>' },
+    { id:"spark", svg:'<path d="M50 8c3 25 17 39 42 42-25 3-39 17-42 42-3-25-17-39-42-42 25-3 39-17 42-42z"/>' },
+    { id:"heart", svg:'<path d="M50 85C18 63 9 44 20 31c10-12 24-7 30 5 6-12 20-17 30-5 11 13 2 32-30 54z"/>' },
+    { id:"flame", svg:'<path d="M50 90c19 0 29-13 29-27 0-20-20-27-15-49-18 9-25 23-25 34 0-7-7-12-9-18-9 9-9 20-9 33 0 15 10 27 29 27z"/>' },
+    { id:"bolt",  svg:'<path d="M58 6L23 56h24l-8 40 36-56H52z"/>' },
+    { id:"bed",   svg:'<path d="M14 82V38M86 82V54"/><path d="M14 54h72"/><path d="M14 44c0-6 6-10 14-10h10c8 0 14 4 14 10"/><path d="M62 34h12c7 0 12 5 12 12v8"/>' },
+    { id:"glass", svg:'<path d="M20 22h60L50 58z"/><path d="M50 58v26M34 86h32"/>' }
+  ];
+  var iconById = function(id){
+    for (var i=0;i<ICONS.length;i++) if (ICONS[i].id === id) return ICONS[i];
+    return null;
+  };
+  var iconFor = function(t){
+    return (t.icon && iconById(t.icon)) || ICONS[hash(t.id || "x") % ICONS.length];
+  };
+
+  var state = { me:null, tickets:[], dur:DURS[1], color:COLORS[0], icon:ICONS[7].id, seg:"yours", local:true };
+  var store = null;
+
+  // ---------- storage ----------
+  var CACHE = "racooness.cache.v2";
+  var online = true;
+
+  function readCache(){
+    try { var v = JSON.parse(localStorage.getItem(CACHE) || "[]"); return Array.isArray(v) ? v : []; }
+    catch(e){ return []; }
+  }
+  function writeCache(l){ try { localStorage.setItem(CACHE, JSON.stringify(l)); } catch(e){} }
+
+  function setOnline(v){
+    if (online === v) return;
+    online = v;
+    showBanner();
+  }
+  function showBanner(){
+    el("banner").innerHTML = online ? ""
+      : '<div class="banner"><b>Offline.</b> Showing the last tickets this phone saw. Sending needs a connection.</div>';
+  }
+
+  var fromRow = function(r){
+    return { id:r.id, text:r.text, note:r.note || "", from:r.from_user, to:r.to_user,
+             color:r.color, icon:r.icon, serial:r.serial,
+             issuedAt:new Date(r.issued_at).getTime(),
+             expiresAt:new Date(r.expires_at).getTime(),
+             state:r.state, tornAt:r.torn_at ? new Date(r.torn_at).getTime() : null };
+  };
+  var toRow = function(t, pair){
+    return { id:t.id, pair:pair, text:t.text, note:t.note, from_user:t.from, to_user:t.to,
+             color:t.color, icon:t.icon, serial:t.serial,
+             issued_at:new Date(t.issuedAt).toISOString(),
+             expires_at:new Date(t.expiresAt).toISOString(),
+             state:t.state, torn_at:t.tornAt ? new Date(t.tornAt).toISOString() : null };
+  };
+
+  function supaStore(client, pair){
+    var cb = null;
+    function reload(){
+      return client.from("tickets").select("*").then(function(res){
+        if (res.error) throw res.error;
+        setOnline(true);
+        var list = (res.data || []).map(fromRow);
+        writeCache(list);
+        if (cb) cb(list);
+      })["catch"](function(){ setOnline(false); });
+    }
+    function after(res){
+      if (res.error) throw res.error;
+      return reload();
+    }
+    return {
+      watch:function(fn){
+        cb = fn;
+        fn(readCache());
+        reload();
+        // realtime evaluates row security from the session, which a pair header
+        // is not part of, so this polls instead — cheap at two people.
+        setInterval(function(){ if (!document.hidden) reload(); }, 4000);
+        document.addEventListener("visibilitychange", function(){ if (!document.hidden) reload(); });
+        window.addEventListener("focus", reload);
+        window.addEventListener("online",  function(){ setOnline(true); reload(); });
+        window.addEventListener("offline", function(){ setOnline(false); });
+        return function(){ cb = null; };
+      },
+      add:function(t){ return client.from("tickets").insert(toRow(t, pair)).then(after); },
+      patch:function(id, f){
+        var row = {};
+        if (f.state) row.state = f.state;
+        if (f.tornAt) row.torn_at = new Date(f.tornAt).toISOString();
+        return client.from("tickets").update(row).eq("id", id).then(after);
+      },
+      remove:function(id){ return client.from("tickets")["delete"]().eq("id", id).then(after); }
+    };
+  }
+
+  // ---------- helpers ----------
+  function el(id){ return document.getElementById(id); }
+  function serial(){ return String(Math.floor(Math.random()*9000)+1000); }
+  function uid(){ return "t" + Date.now().toString(36) + Math.random().toString(36).slice(2,7); }
+  function hash(s){ var h = 0; for (var i=0;i<s.length;i++){ h = (h*31 + s.charCodeAt(i)) | 0; } return Math.abs(h); }
+  function statusOf(t, now){ return t.state === "torn" ? "torn" : (t.expiresAt <= now ? "lapsed" : "live"); }
+  function fmt(ms){
+    if (ms <= 0) return "gone";
+    var s = Math.floor(ms/1000), d = Math.floor(s/86400), h = Math.floor(s%86400/3600),
+        m = Math.floor(s%3600/60), sec = s%60;
+    if (d > 0) return d + "d " + h + "h";
+    if (h > 0) return h + "h " + String(m).padStart(2,"0") + "m";
+    return m + "m " + String(sec).padStart(2,"0") + "s";
+  }
+  function shortDate(ms){
+    try { return new Date(ms).toLocaleDateString(undefined,{day:"numeric",month:"short"}); } catch(e){ return ""; }
+  }
+  function longDate(ms){
+    var d = new Date(ms), now = new Date();
+    try {
+      return d.toLocaleDateString(undefined, d.getFullYear() === now.getFullYear()
+        ? { day:"numeric", month:"short" }
+        : { day:"numeric", month:"short", year:"numeric" });
+    } catch(e){ return ""; }
+  }
+  var enjoyTimer = null;
+  function enjoy(text){
+    var box = el("enjoy");
+    el("enjoy-what").textContent = text;
+    box.hidden = false;
+    // a one-shot CSS animation will not replay on an element that is merely
+    // re-shown, so restart it by hand or the second tear opens at opacity 0
+    ["enjoy-h", "enjoy-what"].forEach(function(id){
+      var n = el(id);
+      n.style.animation = "none";
+      void n.offsetWidth;
+      n.style.animation = "";
+    });
+    clearTimeout(enjoyTimer);
+    enjoyTimer = setTimeout(hideEnjoy, 2600);
+  }
+  function hideEnjoy(){
+    clearTimeout(enjoyTimer);
+    el("enjoy").hidden = true;
+  }
+
+  var toastTimer = null;
+  function toast(msg){
+    var t = el("toast");
+    t.textContent = msg; t.classList.add("up");
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function(){ t.classList.remove("up"); }, 2600);
+  }
+
+  // ---------- config, kept on the phone ----------
+  var CFG_KEY = "racooness.cfg.v2";
+  function loadCfg(){
+    try {
+      var v = JSON.parse(localStorage.getItem(CFG_KEY) || "null");
+      return (v && v.url && v.key && v.pair && v.me) ? v : null;
+    } catch(e){ return null; }
+  }
+  function saveCfg(c){ try { localStorage.setItem(CFG_KEY, JSON.stringify(c)); } catch(e){} }
+  function b64e(o){
+    return btoa(unescape(encodeURIComponent(JSON.stringify(o))))
+      .replace(/\+/g,"-").replace(/\//g,"_").replace(/=+$/,"");
+  }
+  function b64d(s){
+    s = s.replace(/-/g,"+").replace(/_/g,"/");
+    return JSON.parse(decodeURIComponent(escape(atob(s))));
+  }
+  function newPair(){
+    var a = new Uint8Array(16);
+    (window.crypto || window.msCrypto).getRandomValues(a);
+    return Array.prototype.map.call(a, function(b){ return ("0" + b.toString(16)).slice(-2); }).join("");
+  }
+  function pairLink(cfg, who){
+    return location.origin + location.pathname +
+      "#p=" + b64e({ u:cfg.url, k:cfg.key, p:cfg.pair, me:who });
+  }
+
+  // ---------- ticket node ----------
+  var clocks = [];
+  var raised = {};   // ticket id -> the z it was last lifted to
+  var topZ = 40;
+
+  function ticketNode(t, now, opts){
+    var live = opts.live, canTear = opts.canTear, received = opts.received;
+    var left = t.expiresAt - now;
+    var seed = hash(t.id);
+
+    var node = document.createElement("div");
+    node.className = "tk" + (live ? "" : " gone") + (canTear ? "" : " given") +
+                     (live && left < 86400000 ? " urgent" : "");
+    // deterministic scatter so nothing jumps between renders
+    var ang = ((seed % 640) / 100 - 3.2) * (live ? 1 : 0.5);
+    var off = (seed >> 5) % 25 - 12;
+    node.style.transform = "rotate(" + ang.toFixed(2) + "deg)";
+    if (live){
+      node.style.marginLeft = Math.max(0, off) + "px";
+      node.style.marginRight = Math.max(0, -off) + "px";
+    }
+    node.style.zIndex = String(raised[t.id] || (20 - (seed % 15)));
+    node.addEventListener("pointerdown", function(){
+      if (raised[t.id] === topZ) return;
+      topZ = Math.min(topZ + 1, 800);
+      raised[t.id] = topZ;
+      node.style.zIndex = String(topZ);
+    });
+
+    var card = document.createElement("div");
+    card.className = "card";
+    var tc = t.color || COLORS[0];
+    card.style.setProperty("--tc", tc);
+
+    var body = document.createElement("div");
+    body.className = "body";
+    var txt = document.createElement("div");
+    txt.className = "txt";
+
+    var line = document.createElement("p");
+    line.className = "line";
+    line.textContent = t.text;
+    if (live){
+      var i = document.createElement("i");
+      i.textContent = "ticket";
+      line.appendChild(i);
+    }
+    txt.appendChild(line);
+
+    if (live){
+      if (t.note){
+        var note = document.createElement("p");
+        note.className = "note";
+        note.textContent = t.note;
+        txt.appendChild(note);
+      }
+    }
+
+    var meta = document.createElement("div");
+    meta.className = "meta";
+    var who = received ? ("From " + PEOPLE[t.from].short) : ("To " + PEOPLE[t.to].short);
+    var l1 = document.createElement("span");
+    l1.textContent = who + " · No." + (t.serial || "0000");
+    meta.appendChild(l1);
+    var l2 = document.createElement("span");
+    if (live){
+      var cd = document.createElement("b");
+      cd.textContent = fmt(left) + " left";
+      l2.appendChild(cd);
+      l2.appendChild(document.createTextNode(" · until " + longDate(t.expiresAt)));
+      clocks.push({ b:cd, node:node, expiresAt:t.expiresAt });
+    } else {
+      l2.textContent = t.state === "torn" ? ("Torn " + shortDate(t.tornAt || t.expiresAt))
+                                          : ("Ran out " + shortDate(t.expiresAt));
+    }
+    meta.appendChild(l2);
+    txt.appendChild(meta);
+    body.appendChild(txt);
+
+    if (live){
+      var dd = document.createElementNS("http://www.w3.org/2000/svg","svg");
+      dd.setAttribute("viewBox","0 0 100 100");
+      dd.setAttribute("aria-hidden","true");
+      dd.setAttribute("class","doodle");
+      dd.innerHTML = iconFor(t).svg;
+      body.appendChild(dd);
+    }
+    card.appendChild(body);
+
+    var rail = document.createElement("div");
+    rail.className = "rail";
+    var vert = document.createElement("span");
+    vert.className = "vert";
+    if (live){
+      var em = document.createElement("em");
+      em.textContent = canTear ? (left < 86400000 ? "Hurry" : "Tear") : "Wait";
+      vert.appendChild(em);
+    } else {
+      var b2 = document.createElement("b");
+      b2.textContent = t.state === "torn" ? "TORN" : "EXPIRED";
+      vert.appendChild(b2);
+    }
+    rail.appendChild(vert);
+    card.appendChild(rail);
+
+    if (live && canTear){
+      rail.setAttribute("role","button");
+      rail.setAttribute("tabindex","0");
+      rail.setAttribute("aria-label","Tear off to cash in: " + t.text);
+      attachTear(node, rail, t);
+    }
+
+    node.appendChild(card);
+
+    if (live && !received){
+      var del = document.createElement("button");
+      del.type = "button";
+      del.className = "del";
+      del.textContent = "\u2715";
+      del.setAttribute("aria-label", "Take back this ticket: " + t.text);
+      var armTimer = null;
+      del.addEventListener("click", function(e){
+        e.stopPropagation();
+        if (!del.classList.contains("arm")){
+          del.classList.add("arm");
+          del.textContent = "Take it back?";
+          del.setAttribute("aria-label", "Confirm taking back: " + t.text);
+          clearTimeout(armTimer);
+          armTimer = setTimeout(function(){
+            del.classList.remove("arm");
+            del.textContent = "\u2715";
+            del.setAttribute("aria-label", "Take back this ticket: " + t.text);
+          }, 3500);
+          return;
+        }
+        clearTimeout(armTimer);
+        del.disabled = true;
+        store.remove(t.id).then(function(){
+          toast("Took back — " + t.text);
+        })["catch"](function(err){
+          del.disabled = false;
+          if (err && err.code === "invalid_argument") toast("You can read the pile but not change it");
+          else toast("Couldn't take that one back — try again");
+        });
+      });
+      node.appendChild(del);
+    }
+
+    return node;
+  }
+
+  function attachTear(node, rail, t){
+    var startX = 0, dx = 0, dragging = false, done = false;
+    function reset(){ rail.style.transform = ""; node.style.setProperty("--rip","0"); }
+
+    rail.addEventListener("pointerdown", function(e){
+      if (done) return;
+      dragging = true; startX = e.clientX; dx = 0;
+      rail.classList.add("dragging");
+      try { rail.setPointerCapture(e.pointerId); } catch(err){}
+    });
+    rail.addEventListener("pointermove", function(e){
+      if (!dragging) return;
+      dx = Math.max(0, e.clientX - startX);
+      var p = Math.min(1, dx / 90);
+      rail.style.transform = "translateX(" + (dx * 0.95) + "px) rotate(" + (p * 6) + "deg)";
+      node.style.setProperty("--rip", String(p));
+    });
+    function end(){
+      if (!dragging) return;
+      dragging = false;
+      rail.classList.remove("dragging");
+      if (dx > 58) tear(); else reset();
+      dx = 0;
+    }
+    rail.addEventListener("pointerup", end);
+    rail.addEventListener("pointercancel", end);
+    rail.addEventListener("keydown", function(e){
+      if (e.key === "Enter" || e.key === " "){ e.preventDefault(); tear(); }
+    });
+
+    function tear(){
+      if (done) return;
+      done = true;
+      rail.style.transform = "";
+      node.classList.add("torn");
+      var wait = window.matchMedia("(prefers-reduced-motion: reduce)").matches ? 0 : 520;
+      new Promise(function(res){ setTimeout(res, wait); })
+        .then(function(){ return store.patch(t.id, { state:"torn", tornAt: Date.now() }); })
+        .then(function(){ enjoy(t.text); })
+        ["catch"](function(err){
+          done = false;
+          node.classList.remove("torn");
+          if (err && err.code === "invalid_argument") toast("You can read the pile but not change it");
+          else toast("Couldn't tear that one — try again");
+        });
+    }
+  }
+
+  // ---------- render ----------
+  function renderAll(){
+    if (!state.me) return;
+    el("who").textContent = PEOPLE[state.me].short + " \u2699";
+
+    var now = Date.now();
+    var mineSide = state.seg === "yours";
+    var canTear = mineSide;
+
+    var live = [], gone = [];
+    state.tickets.forEach(function(t){
+      var belongs = mineSide ? (t.to === state.me) : (t.from === state.me);
+      if (!belongs) return;
+      (statusOf(t, now) === "live" ? live : gone).push(t);
+    });
+    live.sort(function(a,b){ return a.expiresAt - b.expiresAt; });
+    gone.sort(function(a,b){ return (b.tornAt || b.expiresAt) - (a.tornAt || a.expiresAt); });
+
+    el("seg-yours").setAttribute("aria-pressed", String(mineSide));
+    el("seg-given").setAttribute("aria-pressed", String(!mineSide));
+
+    clocks = [];
+    var box = el("live");
+    box.innerHTML = "";
+    if (!live.length){
+      var e = document.createElement("div");
+      e.className = "empty";
+      var them = PEOPLE[other(state.me)].short;
+      e.innerHTML = mineSide
+        ? "<b>Nothing to tear yet</b><span>When " + them + " sends you one it lands right here with a clock on it.</span>"
+        : "<b>You haven't sent any</b><span>Write one and " + them + " decides when to tear it.</span>";
+      box.appendChild(e);
+    } else {
+      live.forEach(function(t){ box.appendChild(ticketNode(t, now, { live:true, canTear:canTear, received:mineSide })); });
+    }
+
+    var dbox = el("dead");
+    dbox.innerHTML = "";
+    el("deadwrap").hidden = !gone.length;
+    if (gone.length){
+      var torn = gone.filter(function(t){ return t.state === "torn"; }).length;
+      el("deadcount").textContent = torn + " torn · " + (gone.length - torn) + " ran out";
+      gone.forEach(function(t){ dbox.appendChild(ticketNode(t, now, { live:false, canTear:false, received:mineSide })); });
+    }
+  }
+
+  // ---------- send overlay ----------
+  var previewSerial = serial();
+
+  function buildIcons(){
+    var box = el("icons");
+    box.innerHTML = "";
+    ICONS.forEach(function(ic){
+      var b = document.createElement("button");
+      b.type = "button"; b.className = "ic";
+      b.setAttribute("aria-label", "Icon: " + ic.id);
+      b.setAttribute("aria-pressed", String(ic.id === state.icon));
+      b.innerHTML = '<svg viewBox="0 0 100 100" aria-hidden="true">' + ic.svg + '</svg>';
+      b.addEventListener("click", function(){
+        state.icon = ic.id;
+        Array.prototype.forEach.call(box.children, function(x){ x.setAttribute("aria-pressed","false"); });
+        b.setAttribute("aria-pressed","true");
+        syncPreview();
+      });
+      box.appendChild(b);
+    });
+  }
+
+  function buildSwatches(){
+    var box = el("swatches");
+    box.innerHTML = "";
+    COLORS.forEach(function(c){
+      var b = document.createElement("button");
+      b.type = "button"; b.className = "sw"; b.style.background = c;
+      b.setAttribute("aria-label", "Colour " + c);
+      b.setAttribute("aria-pressed", String(c === state.color));
+      b.addEventListener("click", function(){
+        state.color = c;
+        Array.prototype.forEach.call(box.children, function(x){ x.setAttribute("aria-pressed","false"); });
+        b.setAttribute("aria-pressed","true");
+        syncPreview();
+      });
+      box.appendChild(b);
+    });
+  }
+  function buildDurs(){
+    var box = el("durs");
+    box.innerHTML = "";
+    DURS.forEach(function(d){
+      var b = document.createElement("button");
+      b.type = "button"; b.className = "chip"; b.textContent = d.label;
+      b.setAttribute("aria-pressed", String(d.id === state.dur.id));
+      b.addEventListener("click", function(){
+        state.dur = d;
+        Array.prototype.forEach.call(box.children, function(x){ x.setAttribute("aria-pressed","false"); });
+        b.setAttribute("aria-pressed","true");
+        syncPreview();
+      });
+      box.appendChild(b);
+    });
+  }
+
+  function syncPreview(){
+    var txt = el("text").value.trim();
+    var note = el("note").value.trim();
+    el("pv-line").firstChild.nodeValue = txt || "Your ticket";
+    el("pv-dd").innerHTML = (iconById(state.icon) || ICONS[0]).svg;
+    var pn = el("pv-note");
+    pn.textContent = note; pn.hidden = !note;
+    var pc = el("preview").querySelector(".card");
+    pc.style.setProperty("--tc", state.color);
+    pc.querySelector(".body").style.setProperty("--tc", state.color);
+    pc.querySelector(".rail").style.setProperty("--tc", state.color);
+    if (state.me){
+      el("pv-meta").innerHTML = "";
+      var m1 = document.createElement("span");
+      m1.textContent = "From " + PEOPLE[state.me].short + " · No." + previewSerial;
+      var m2 = document.createElement("span");
+      var mb = document.createElement("b");
+      mb.textContent = state.dur.label;
+      m2.appendChild(mb);
+      m2.appendChild(document.createTextNode(" · until " + longDate(Date.now() + state.dur.ms)));
+      el("pv-meta").appendChild(m1); el("pv-meta").appendChild(m2);
+    }
+    el("give").disabled = !txt || !state.me;
+  }
+
+  var savedScroll = 0;
+  function openSend(){
+    if (!state.me) return;
+    savedScroll = window.scrollY;
+    el("ov").hidden = false;
+    document.body.style.overflow = "hidden";
+    el("give").textContent = "Hand it to " + PEOPLE[other(state.me)].short;
+    syncPreview();
+    el("text").focus({ preventScroll: true });
+  }
+  function closeSend(){
+    el("ov").hidden = true;
+    document.body.style.overflow = "";
+    el("open-send").focus({ preventScroll: true });
+    window.scrollTo(0, savedScroll);
+  }
+
+  function issue(){
+    var txt = el("text").value.trim();
+    if (!txt || !state.me) return;
+    var now = Date.now();
+    var t = {
+      id: uid(), text: txt, note: el("note").value.trim(),
+      from: state.me, to: other(state.me),
+      color: state.color, icon: state.icon, serial: previewSerial,
+      issuedAt: now, expiresAt: now + state.dur.ms,
+      state: "live", tornAt: null
+    };
+    el("give").disabled = true;
+    store.add(t).then(function(){
+      el("text").value = ""; el("note").value = "";
+      previewSerial = serial();
+      closeSend();
+      syncPreview();
+      toast("Sent to " + PEOPLE[t.to].short);
+    })["catch"](function(err){
+      el("give").disabled = false;
+      if (err && err.code === "invalid_argument") toast("You can read the pile but not add to it");
+      else toast("That didn't save — try again");
+    });
+  }
+
+  // ---------- tick ----------
+  setInterval(function(){
+    var now = Date.now(), flipped = false;
+    clocks.forEach(function(c){
+      var left = c.expiresAt - now;
+      if (left <= 0){ flipped = true; return; }
+      c.b.textContent = fmt(left) + " left";
+      if (left < 86400000) c.node.classList.add("urgent");
+    });
+    if (flipped) renderAll();
+  }, 1000);
+
+  // ---------- wiring ----------
+  buildIcons();
+  buildSwatches();
+  buildDurs();
+  el("text").addEventListener("input", syncPreview);
+  el("note").addEventListener("input", syncPreview);
+  el("give").addEventListener("click", issue);
+  el("open-send").addEventListener("click", openSend);
+  el("ov-close").addEventListener("click", closeSend);
+  document.addEventListener("keydown", function(e){
+    if (e.key === "Escape" && !el("enjoy").hidden) hideEnjoy();
+    else if (e.key === "Escape" && !el("ov").hidden) closeSend();
+  });
+  el("who").addEventListener("click", openSettings);
+  el("enjoy").addEventListener("click", hideEnjoy);
+  el("seg-yours").addEventListener("click", function(){ state.seg = "yours"; renderAll(); });
+  el("seg-given").addEventListener("click", function(){ state.seg = "given"; renderAll(); });
+
+  // ---------- settings sheet ----------
+  function openSettings(){
+    var cfg = loadCfg();
+    if (!cfg) return;
+    var links = { stinky: pairLink(cfg, "stinky"), pinky: pairLink(cfg, "pinky") };
+    var esc = function(v){ return v.replace(/"/g, "&quot;"); };
+
+    var wrap = document.createElement("div");
+    wrap.className = "sheet";
+    wrap.innerHTML =
+      '<div class="box" role="dialog" aria-modal="true" aria-label="Set up the phones">' +
+        '<h2>Set up<br>the phones</h2>' +
+        '<p>Send each link to the right phone. Opening it is the whole setup \u2014 nothing to type, ' +
+          'nothing to sign into.</p>' +
+        '<span class="lnklab">Stinky Racoon\u2019s phone</span>' +
+        '<input class="linkbox" id="lnk-stinky" readonly value="' + esc(links.stinky) + '">' +
+        '<button class="pick s" type="button" data-copy="stinky">Copy Stinky\u2019s link</button>' +
+        '<span class="lnklab">Pinkylocious\u2019s phone</span>' +
+        '<input class="linkbox" id="lnk-pinky" readonly value="' + esc(links.pinky) + '">' +
+        '<button class="pick p" type="button" data-copy="pinky">Copy Pinky\u2019s link</button>' +
+        '<p class="warn">Anyone holding a link can read and write your tickets, so send them ' +
+          'somewhere private and don\u2019t post them anywhere.</p>' +
+        '<button class="cancel" type="button" data-act="swap">This device is ' +
+          PEOPLE[other(cfg.me)].short + ', not ' + PEOPLE[cfg.me].short + '</button>' +
+        '<button class="cancel" type="button" data-act="close">Close</button>' +
+        '<button class="cancel danger" type="button" data-act="reset">Disconnect this device</button>' +
+      '</div>';
+    document.body.appendChild(wrap);
+
+    wrap.addEventListener("click", function(e){
+      var c = e.target.closest("button[data-copy]");
+      if (c){
+        var who = c.getAttribute("data-copy");
+        var inp = wrap.querySelector("#lnk-" + who);
+        inp.focus(); inp.select(); inp.setSelectionRange(0, 99999);
+        if (navigator.clipboard && navigator.clipboard.writeText){
+          navigator.clipboard.writeText(links[who])
+            .then(function(){ toast("Copied " + PEOPLE[who].short + "\u2019s link"); })
+            ["catch"](function(){ toast("Selected \u2014 press copy"); });
+        } else { toast("Selected \u2014 press copy"); }
+        return;
+      }
+      var b = e.target.closest("button[data-act]");
+      if (!b){ if (e.target === wrap) wrap.remove(); return; }
+      var act = b.getAttribute("data-act");
+      if (act === "swap"){ cfg.me = other(cfg.me); saveCfg(cfg); location.reload(); return; }
+      if (act === "reset"){
+        if (b.classList.contains("arm")){
+          try { localStorage.removeItem(CFG_KEY); localStorage.removeItem(CACHE); } catch(err){}
+          location.href = location.origin + location.pathname;
+          return;
+        }
+        b.classList.add("arm"); b.textContent = "Really disconnect?"; return;
+      }
+      wrap.remove();
+    });
+  }
+
+  // ---------- boot ----------
+  function start(cfg){
+    state.me = cfg.me;
+    import("https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/+esm").then(function(mod){
+      var client = mod.createClient(cfg.url, cfg.key, {
+        global: { headers: { "x-pair": cfg.pair } },
+        auth: { persistSession: false }
+      });
+      store = supaStore(client, cfg.pair);
+      store.watch(function(list){ state.tickets = list; renderAll(); });
+      showBanner();
+      syncPreview();
+      renderAll();
+      el("setup").hidden = true;
+      el("app").hidden = false;
+    })["catch"](function(){
+      el("setup").hidden = false;
+      el("app").hidden = true;
+      setupError("Couldn't reach the internet to start up. Check your connection and reload.");
+    });
+  }
+
+  function setupError(msg){
+    var e = el("setup-err");
+    e.textContent = msg || "";
+    e.hidden = !msg;
+  }
+
+  function showSetup(prefill){
+    el("setup").hidden = false;
+    el("app").hidden = true;
+    if (prefill){
+      el("su-url").value = prefill.u || "";
+      el("su-key").value = prefill.k || "";
+    }
+  }
+
+  // a pair link configures this phone with nothing to type
+  function readSeed(){
+    if (location.hash.indexOf("#p=") !== 0) return null;
+    var v = null;
+    try { v = b64d(location.hash.slice(3)); } catch(e){ v = null; }
+    history.replaceState(null, "", location.pathname + location.search);
+    return (v && v.u && v.k && v.p && v.me) ? v : null;
+  }
+  var seeded = readSeed();
+  if (seeded) saveCfg({ url:seeded.u, key:seeded.k, pair:seeded.p, me:seeded.me });
+
+  // opening a pair link while the app is already on screen only changes the hash,
+  // so take the new pairing and restart rather than silently ignoring it
+  window.addEventListener("hashchange", function(){
+    var v = readSeed();
+    if (!v) return;
+    saveCfg({ url:v.u, key:v.k, pair:v.p, me:v.me });
+    try { localStorage.removeItem(CACHE); } catch(e){}
+    location.reload();
+  });
+
+  var cfg = loadCfg();
+  if (cfg) start(cfg);
+  else showSetup(seeded);
+
+  el("su-copy").addEventListener("click", function(){
+    var sql = el("su-sql").textContent;
+    if (navigator.clipboard && navigator.clipboard.writeText){
+      navigator.clipboard.writeText(sql).then(function(){ toast("SQL copied"); })
+        ["catch"](function(){ toast("Select the box and copy"); });
+    } else { toast("Select the box and copy"); }
+  });
+
+  Array.prototype.forEach.call(document.querySelectorAll("#su-who button"), function(b){
+    b.addEventListener("click", function(){
+      Array.prototype.forEach.call(document.querySelectorAll("#su-who button"), function(x){
+        x.setAttribute("aria-pressed","false");
+      });
+      b.setAttribute("aria-pressed","true");
+    });
+  });
+
+  el("su-go").addEventListener("click", function(){
+    setupError("");
+    var url = el("su-url").value.trim().replace(/\/+$/,"");
+    var key = el("su-key").value.trim();
+    var whoBtn = document.querySelector('#su-who button[aria-pressed="true"]');
+    if (!/^https:\/\/[a-z0-9-]+\.supabase\.co$/i.test(url)){
+      return setupError("That project URL doesn't look right. It should look like https://abcdefgh.supabase.co");
+    }
+    if (key.length < 30){
+      return setupError("That key looks too short. Copy the whole anon / publishable key.");
+    }
+    if (!whoBtn) return setupError("Pick which one you are.");
+
+    var btn = el("su-go");
+    btn.disabled = true; btn.textContent = "Checking\u2026";
+    var conf = { url:url, key:key, pair:newPair(), me:whoBtn.getAttribute("data-who") };
+
+    import("https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/+esm").then(function(mod){
+      var c = mod.createClient(conf.url, conf.key, {
+        global: { headers: { "x-pair": conf.pair } },
+        auth: { persistSession: false }
+      });
+      return c.from("tickets").select("id").limit(1);
+    }).then(function(res){
+      btn.disabled = false; btn.textContent = "Start";
+      if (res.error){
+        var m = res.error.message || "";
+        if (/relation|does not exist|schema cache/i.test(m)){
+          return setupError("Connected, but the tickets table isn't there yet. Run the SQL above in Supabase, then press Start again.");
+        }
+        return setupError(m);
+      }
+      saveCfg(conf);
+      start(conf);
+      setTimeout(openSettings, 600);
+    })["catch"](function(err){
+      btn.disabled = false; btn.textContent = "Start";
+      setupError("Couldn't reach that project. Check the URL and key, then try again.");
+    });
+  });
+})();
+</script>
+</body>
+</html>
