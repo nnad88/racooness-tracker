@@ -1,6 +1,6 @@
 // Cache the app shell so the home-screen icon opens instantly and works offline.
 // Supabase calls are never cached — they always go to the network.
-const CACHE = "racooness-v3";
+const CACHE = "racooness-v4";
 const SHELL = [
   "./index.html",
   

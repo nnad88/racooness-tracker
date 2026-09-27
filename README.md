@@ -21,25 +21,32 @@ That's it. No file to edit, no accounts to create, nothing to sign into.
 
 ## On the phones
 
-The moment setup finishes you get **two links** — one for each phone. Send each one
-to the right phone. **Open the link first, then make the icon from that page.**
+The moment setup finishes you get **two links** — one for each phone.
 
-- **iPhone** — open the link in **Safari** (Chrome on iOS cannot install web apps).
-  With that link on screen: Share button → **Add to Home Screen** → **Add**.
-- **Android** — open the link in **Chrome**. It offers **Install app**; if not,
-  **⋮** → **Add to Home screen**.
+**The reliable way, and the one to use if anything goes wrong:**
 
-> **Why the order matters on iPhone.** iOS gives a home-screen app its own storage,
-> separate from Safari's. An icon made from the plain address opens to the setup
-> screen every time, because it cannot see what Safari saved. The icon has to be
-> made while the pairing link is in the address bar — then the pairing travels with
-> the icon. If you already made one that opens to setup, delete it and remake it
-> from the link.
+1. On the phone, open the plain app address in **Safari** (iPhone) or **Chrome**
+   (Android) — no link, no fragment, just `https://…/racooness-tracker/`.
+2. Make the icon: iPhone **Share → Add to Home Screen**; Android **⋮ → Add to
+   Home screen** (or the Install prompt).
+3. Open the app **from the icon**. It shows the setup screen.
+4. Paste the pairing link into the box at the top — *Already have a pairing link?*
+   — and press **Pair this device**. Done, permanently.
 
-Opening the link is the entire setup on the phone. Nothing to type, no sign-in.
-The app knows which raccoon that phone is because the link says so.
+That last step is what makes it stick. iOS gives a home-screen app its own storage,
+walled off from Safari, so anything you paired in Safari is invisible to the icon.
+Pairing from inside the icon puts it in the right place.
 
-You can bring the links back up any time from the little button at the top right.
+Opening a pairing link directly in Safari also works and skips steps 3–4, but only
+if you then make the icon from that exact page — and iOS is inconsistent about
+keeping the link intact when it saves the bookmark. The paste method always works.
+
+**Add to Home Screen missing from the Share sheet?** You are not in Safari itself.
+Links opened from Messages or WhatsApp run in an in-app browser that cannot install
+anything. Tap the compass / *Open in Safari* button first. There is also no Share
+sheet inside the installed app.
+
+You can bring the pairing links back up any time from the button at the top right.
 
 ## Worth knowing
 
