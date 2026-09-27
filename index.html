@@ -3,18 +3,18 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Racooness Tracker</title>
+<title>Racoonness Tracker</title>
 <meta name="theme-color" content="#5A2DD6">
-<meta name="description" content="Hand each other tickets, and tear them off to cash them in.">
+<meta name="description" content="Hand each other coupons, and rip them off to cash them in.">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="Racooness">
+<meta name="apple-mobile-web-app-title" content="Racoonness">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
 <link rel="icon" href="icons/icon-192.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bagel+Fat+One&family=Caveat:wght@600;700&family=DM+Mono:wght@400;500&family=Fredoka:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bagel+Fat+One&family=DM+Mono:wght@400;500&family=Fredoka:wght@400;500;600;700&display=swap">
 <style>
 html,body{margin:0;padding:0}
 :root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
@@ -41,7 +41,6 @@ img{max-width:100%}
   --mono:"DM Mono",ui-monospace,Menlo,monospace;
   --fat:"Bagel Fat One",system-ui,sans-serif;
   --ui:"Fredoka",system-ui,sans-serif;
-  --hand:"Caveat",cursive;
 }
 *{box-sizing:border-box}
 html,body{height:100%;background:var(--grape)}
@@ -74,6 +73,9 @@ h1 .b{color:var(--lemon)}
 .banner{margin:14px 13px 0;background:var(--grape-d);border:2px solid var(--grape-dd);border-radius:9px;
   padding:9px 11px;font-family:var(--mono);font-size:9.5px;line-height:1.5;color:#C3ADFF}
 .banner b{color:var(--lemon);font-weight:400}
+.alertbar{margin-top:8px;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.alertbar button{font-family:var(--fat);font-size:14px;background:var(--lemon);color:var(--grape-d);
+  border-radius:99px;padding:8px 14px;line-height:1}
 
 main{flex:1;position:relative;z-index:0;padding:20px 13px calc(40px + env(safe-area-inset-bottom,0px));overflow-x:clip}
 
@@ -89,7 +91,8 @@ main{flex:1;position:relative;z-index:0;padding:20px 13px calc(40px + env(safe-a
 .tk .line i{font-style:normal;display:block;margin-top:1px}
 .tk .doodle{width:clamp(56px,17vw,80px);height:auto;aspect-ratio:1;flex:none;margin:1px 0 0;display:block;opacity:.92}
 .tk .doodle path,.tk .doodle circle{stroke:var(--ink);fill:none;stroke-width:5.5;stroke-linecap:round;stroke-linejoin:round}
-.tk .note{font-family:var(--hand);font-weight:700;font-size:clamp(15px,4.4vw,18px);line-height:1.06;margin:6px 0 0;opacity:.9}
+.tk .note{font-family:var(--mono);font-weight:500;font-size:clamp(11px,3.3vw,12.5px);line-height:1.35;
+  margin:7px 0 0;opacity:.78}
 .tk .meta{font-family:var(--mono);font-weight:500;font-size:9px;letter-spacing:.11em;text-transform:uppercase;
   opacity:.6;margin-top:auto;padding-top:10px;display:flex;flex-direction:column;gap:3px;line-height:1.3}
 .tk .meta b{font-weight:500;opacity:1;font-size:10px;letter-spacing:.06em}
@@ -97,15 +100,22 @@ main{flex:1;position:relative;z-index:0;padding:20px 13px calc(40px + env(safe-a
 
 /* right rail = the tear-off */
 .tk .rail{width:clamp(82px,27%,132px);flex:none;position:relative;display:flex;align-items:center;justify-content:center;
-  border-left:4px dashed rgba(20,20,20,.38);touch-action:none;user-select:none;-webkit-user-select:none;
+  touch-action:none;user-select:none;-webkit-user-select:none;
   background:var(--tc,#FF6B6B);transition:transform .22s cubic-bezier(.3,1.4,.5,1);
   -webkit-mask:var(--cut-r);-webkit-mask-composite:source-in;mask:var(--cut-r);mask-composite:intersect}
 .tk .rail.dragging{transition:none}
+.tk .rail::before{content:"";position:absolute;left:0;top:0;bottom:0;width:7px;
+  background:radial-gradient(circle 2.6px at 3.5px 7px,rgba(20,20,20,.42) 98%,#0000) 0 0/7px 14px repeat-y}
+.tk.gone .rail::before{background:radial-gradient(circle 2px at 3px 6px,rgba(58,53,80,.45) 98%,#0000) 0 0/6px 12px repeat-y;width:6px}
 .tk .rail .vert{writing-mode:vertical-rl;font-family:var(--mono);font-size:11px;font-weight:500;
   letter-spacing:.14em;text-transform:uppercase;white-space:nowrap;display:flex;align-items:center;
-  justify-content:center;padding:8px 0}
+  justify-content:center;padding:8px 0;gap:9px}
 .tk .rail .vert b{font-weight:500}
 .tk .rail .vert em{font-style:normal;font-family:var(--fat);font-size:clamp(22px,7vw,30px);letter-spacing:0;text-transform:uppercase}
+.tk .rail .vert .no{font-family:var(--mono);font-size:9px;letter-spacing:.12em;opacity:.6}
+.tk.blink .rail{animation:blinkrail .9s steps(2,end) infinite}
+@keyframes blinkrail{50%{opacity:.35}}
+.tk.claimed .body,.tk.claimed .rail{filter:saturate(.5)}
 .tk.torn .rail{transform:translateX(86%) rotate(10deg);opacity:0;transition:transform .5s ease-in,opacity .5s}
 .tk.torn .body{transform:translateX(-32%) rotate(-7deg);opacity:0}
 
@@ -134,6 +144,9 @@ main{flex:1;position:relative;z-index:0;padding:20px 13px calc(40px + env(safe-a
 .shead i{flex:1;height:4px;background:var(--grape-d);font-style:normal}
 .shead span{font-family:var(--mono);font-size:9px;letter-spacing:.1em;color:#A992E8;white-space:nowrap}
 
+.clearbtn{flex:none;font-family:var(--mono);font-size:9px;letter-spacing:.12em;text-transform:uppercase;
+  background:var(--grape-d);color:#A992E8;border:2px solid var(--grape-dd);border-radius:99px;padding:7px 11px}
+.clearbtn.arm{background:#E8156B;color:var(--cream);border-color:#E8156B}
 .empty{background:var(--grape-d);border:3px dashed #4A22B8;border-radius:13px;padding:28px 18px;text-align:center}
 .empty b{display:block;font-family:var(--fat);font-weight:400;font-size:20px;line-height:1.05;color:var(--lemon);margin-bottom:7px}
 .empty span{font-size:13.5px;line-height:1.45;color:#C3ADFF;font-weight:500}
@@ -145,7 +158,7 @@ main{flex:1;position:relative;z-index:0;padding:20px 13px calc(40px + env(safe-a
 .ov .inner{max-width:480px;margin:0 auto}
 .ov #preview{margin-bottom:22px}
 .ovhead{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:16px}
-.ovhead h2{font-family:var(--fat);font-weight:400;font-size:34px;line-height:.88;margin:0;color:var(--cream);
+.ovhead h2{font-family:var(--fat);font-weight:400;font-size:clamp(24px,7.4vw,34px);line-height:1;white-space:nowrap;margin:0;color:var(--cream);
   text-shadow:3px 3px 0 var(--hot)}
 .x{font-family:var(--fat);font-size:21px;line-height:1;background:var(--grape-d);color:var(--cream);
   border-radius:50%;width:46px;height:46px;flex:none}
@@ -156,7 +169,7 @@ textarea#text{width:100%;min-height:84px;resize:none;background:var(--cream);col
   padding:12px 13px;font-family:var(--fat);font-weight:400;font-size:21px;line-height:1.02;text-transform:uppercase}
 textarea#text::placeholder{color:rgba(34,34,17,.28)}
 input#note{width:100%;background:var(--grape-d);color:var(--cream);border:2px solid #4A22B8;border-radius:5px;
-  padding:11px 12px;font-family:var(--hand);font-weight:700;font-size:18px}
+  padding:11px 12px;font-family:var(--mono);font-weight:500;font-size:14px}
 input#note::placeholder{color:#9B85D8}
 textarea#text:focus,input#note:focus{outline:3px solid var(--lemon);outline-offset:2px}
 .swatches{display:grid;grid-template-columns:repeat(6,1fr);gap:9px}
@@ -173,6 +186,12 @@ textarea#text:focus,input#note:focus{outline:3px solid var(--lemon);outline-offs
 .chip{font-family:var(--fat);font-weight:400;font-size:15px;background:var(--grape-d);color:#B49BF5;
   border-radius:99px;padding:11px 6px;border:3px solid var(--grape-dd);text-align:center}
 .chip[aria-pressed="true"]{background:var(--lemon);color:var(--grape-d);border-color:var(--lemon)}
+.customrow{display:grid;grid-template-columns:96px 1fr;gap:8px;margin-top:10px}
+.customrow[hidden]{display:none}
+.customrow input,.customrow select{background:var(--grape-d);color:var(--cream);border:3px solid var(--grape-dd);
+  border-radius:99px;padding:11px 14px;font-family:var(--fat);font-weight:400;font-size:15px;width:100%}
+.customrow select{appearance:none;-webkit-appearance:none;text-align:center}
+.customrow input:focus,.customrow select:focus{outline:3px solid var(--lemon);outline-offset:2px}
 .give{width:100%;font-family:var(--fat);font-weight:400;font-size:22px;line-height:1;background:var(--hot);
   color:var(--cream);border-radius:13px;padding:16px 14px;box-shadow:0 5px 0 #C22C74;margin-top:2px}
 .give:active{transform:translateY(3px);box-shadow:0 2px 0 #C22C74}
@@ -218,6 +237,29 @@ textarea#text:focus,input#note:focus{outline:3px solid var(--lemon);outline-offs
 .iostip span{display:block;font-family:var(--ui);font-weight:500;font-size:13px;line-height:1.4}
 .iostip button{margin-top:11px;font-family:var(--fat);font-size:14px;background:var(--grape-d);color:var(--cream);
   border-radius:99px;padding:9px 18px}
+.barcode{display:flex;align-items:flex-end;justify-content:center;gap:3px;height:64px;margin:20px auto 0;
+  max-width:280px;flex-wrap:wrap;animation:pop .5s .2s cubic-bezier(.2,1.7,.5,1) both}
+.barcode i{display:block;height:52px;background:var(--cream);border-radius:1px}
+.barcode span{display:block;width:100%;text-align:center;font-family:var(--mono);font-size:10px;
+  letter-spacing:.3em;color:var(--cream);margin-top:7px}
+.barcode.dark i{background:var(--grape-d)}
+.barcode.dark span{color:var(--grape-d)}
+.enjoy.pending h2{color:var(--cream)}
+.enjoy.pending .pips{display:none}
+
+.accept{position:fixed;inset:0;z-index:985;background:var(--lemon);display:grid;place-items:center;
+  padding:26px;text-align:center}
+.accept[hidden]{display:none}
+.accept .kick{display:block;font-family:var(--mono);font-size:11px;letter-spacing:.2em;text-transform:uppercase;
+  color:#8A6E00;margin-bottom:10px}
+.accept h2{font-family:var(--fat);font-weight:400;margin:0;color:var(--grape-d);line-height:.94;
+  font-size:clamp(30px,8.6vw,46px);text-wrap:balance;
+  animation:pop .5s cubic-bezier(.2,1.7,.5,1) both}
+.acc-go{margin-top:26px;font-family:var(--fat);font-weight:400;font-size:24px;line-height:1;background:var(--hot);
+  color:var(--cream);border-radius:15px;padding:19px 34px;box-shadow:0 6px 0 #C22C74}
+.acc-go:active{transform:translateY(4px);box-shadow:0 2px 0 #C22C74}
+.acc-later{display:block;margin:16px auto 0;font-family:var(--mono);font-size:10px;letter-spacing:.14em;
+  text-transform:uppercase;color:#8A6E00;padding:8px}
 .toast{position:fixed;left:50%;bottom:calc(22px + env(safe-area-inset-bottom,0px));
   transform:translateX(-50%) translateY(150%);visibility:hidden;
   background:var(--lemon);color:var(--grape-d);font-family:var(--fat);font-weight:400;font-size:15px;line-height:1;
@@ -300,7 +342,7 @@ textarea#text:focus,input#note:focus{outline:3px solid var(--lemon);outline-offs
 <body>
 <div class="setup" id="setup" hidden>
   <div class="setupbox">
-    <h1 class="gatetitle"><span>Racooness</span><span class="b">Tracker</span></h1>
+    <h1 class="gatetitle"><span>Racoonness</span><span class="b">Tracker</span></h1>
     <div class="haslink">
       <h3>Already have a pairing link?</h3>
       <p>Paste it here and this device is done. Use this if the icon on your phone keeps
@@ -318,7 +360,7 @@ textarea#text:focus,input#note:focus{outline:3px solid var(--lemon);outline-offs
     <div class="step">
       <b>1</b>
       <div>
-        <h3>Make a place for the tickets</h3>
+        <h3>Make a place for the coupons</h3>
         <p>Open <a href="https://supabase.com/dashboard" target="_blank" rel="noopener">supabase.com</a>,
           sign up free, and hit <em>New project</em>. Any name, any region. It takes about two
           minutes to build.</p>
@@ -394,7 +436,7 @@ create policy "pair only" on public.tickets
 <div id="app" hidden>
   <div class="top">
     <div class="toprow"><button class="who" id="who" type="button">you are —</button></div>
-    <h1><span>Racooness</span><span class="b">Tracker</span></h1>
+    <h1><span>Racoonness</span><span class="b">Tracker</span></h1>
   </div>
 
   <div class="bar">
@@ -407,7 +449,8 @@ create policy "pair only" on public.tickets
   <main>
     <div id="live"></div>
     <div id="deadwrap" hidden>
-      <div class="shead"><b>Used &amp; gone</b><i></i><span id="deadcount"></span></div>
+      <div class="shead"><b>Used &amp; gone</b><i></i><span id="deadcount"></span>
+        <button class="clearbtn" id="clear-dead" type="button">Clear</button></div>
       <div id="dead"></div>
     </div>
   </main>
@@ -416,7 +459,7 @@ create policy "pair only" on public.tickets
 <div class="ov" id="ov" hidden role="dialog" aria-modal="true" aria-labelledby="ovtitle">
   <div class="inner">
     <div class="ovhead">
-      <h2 id="ovtitle">Send a<br>ticket</h2>
+      <h2 id="ovtitle">Send a coupon</h2>
       <button class="x" id="ov-close" type="button" aria-label="Close">✕</button>
     </div>
 
@@ -424,18 +467,18 @@ create policy "pair only" on public.tickets
       <div class="card">
         <div class="body">
           <div class="txt">
-            <p class="line" id="pv-line">Your ticket<i id="pv-i">ticket</i></p>
+            <p class="line" id="pv-line">Your coupon<i id="pv-i">coupon</i></p>
             <p class="note" id="pv-note" hidden></p>
-            <div class="meta" id="pv-meta"><span>From — · No.0000</span></div>
+            <div class="meta" id="pv-meta"><span>From —</span></div>
           </div>
           <svg class="doodle" id="pv-dd" viewBox="0 0 100 100" aria-hidden="true"></svg>
         </div>
-        <div class="rail"><span class="vert"><em>Tear</em></span></div>
+        <div class="rail"><span class="vert"><em>Rip</em><span class="no">No.0000</span></span></div>
       </div>
     </div>
 
     <div class="field">
-      <label for="text">What's the ticket</label>
+      <label for="text">What's the coupon</label>
       <textarea id="text" maxlength="60" placeholder="Back rub, 20 minutes" autocomplete="off"></textarea>
     </div>
     <div class="field">
@@ -453,6 +496,16 @@ create policy "pair only" on public.tickets
     <div class="field">
       <span class="flab" id="lbl-dur">Good for</span>
       <div class="chips" role="group" aria-labelledby="lbl-dur" id="durs"></div>
+      <div class="customrow" id="customrow" hidden>
+        <input id="cu-n" type="number" min="1" max="999" step="1" value="10" aria-label="How many">
+        <select id="cu-u" aria-label="Minutes, hours, days, weeks or months">
+          <option value="min">minutes</option>
+          <option value="hour">hours</option>
+          <option value="day">days</option>
+          <option value="week">weeks</option>
+          <option value="month">months</option>
+        </select>
+      </div>
     </div>
     <button class="give" id="give" type="button" disabled>Hand it over</button>
   </div>
@@ -462,8 +515,19 @@ create policy "pair only" on public.tickets
   <div>
     <h2 id="enjoy-h">Enjoy</h2>
     <p id="enjoy-what"></p>
+    <div class="barcode" id="enjoy-bar" aria-hidden="true"></div>
     <div class="pips" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div>
-    <small>Tap anywhere</small>
+    <small id="enjoy-note">Tap anywhere</small>
+  </div>
+</div>
+
+<div class="accept" id="accept" hidden role="alertdialog" aria-labelledby="accept-what">
+  <div>
+    <span class="kick" id="accept-who">is claiming</span>
+    <h2 id="accept-what"></h2>
+    <div class="barcode dark" id="accept-bar" aria-hidden="true"></div>
+    <button class="acc-go" id="accept-go" type="button">Accept</button>
+    <button class="acc-later" id="accept-later" type="button">Not right now</button>
   </div>
 </div>
 
@@ -485,30 +549,31 @@ if ("serviceWorker" in navigator) {
   };
   var other = function(id){ return id === "stinky" ? "pinky" : "stinky"; };
 
-  var COLORS = ["#FF6B6B","#FFB3C7","#FFE66D","#A8C49A","#7ED8E8","#C9A8FF",
-                "#FFA65C","#96E6B3","#FF9FB2","#D6E85C","#8FB8FF","#F0C9A0"];
+  var COLORS = ["#FF5A5F","#FF8A3D","#FFC531","#FFF06A","#C3E84B","#5FD98A",
+                "#4FD6C4","#5BC8F5","#8FA8FF","#C79BFF","#FF7BD0","#E8D7C3"];
 
   var DURS = [
+    { id:"h1", label:"1 hour",  ms:3600000 },
     { id:"d1", label:"1 day",   ms:86400000 },
     { id:"d3", label:"3 days",  ms:259200000 },
     { id:"w1", label:"1 week",  ms:604800000 },
     { id:"m1", label:"1 mo",    ms:2592000000 },
-    { id:"m2", label:"2 mo",    ms:5184000000 },
-    { id:"m3", label:"3 mo",    ms:7776000000 }
+    { id:"cu", label:"Custom",  ms:0, custom:true }
   ];
+  var UNITS = { min:60000, hour:3600000, day:86400000, week:604800000, month:2592000000 };
 
   var ICONS = [
     { id:"smile", svg:'<circle cx="50" cy="50" r="33"/><circle cx="38" cy="42" r="3"/><circle cx="62" cy="42" r="3"/><path d="M34 60c9 10 23 10 32 0"/>' },
     { id:"wink",  svg:'<circle cx="50" cy="50" r="33"/><path d="M32 42c4-5 9-5 13 0"/><circle cx="63" cy="42" r="3"/><path d="M36 62c8 7 18 6 26-2"/>' },
     { id:"lips",  svg:'<path d="M11 50c14-17 28-17 39-7 11-10 25-10 39 7-14 19-28 26-39 26S25 69 11 50z"/><path d="M11 50h78"/>' },
     { id:"peace", svg:'<path d="M40 54V19M58 56V24"/><path d="M27 52c-6 8-4 20 4 26 9 7 24 8 33 1 8-6 11-16 10-27l-2-16"/><path d="M27 52l-4-12"/>' },
-    { id:"point", svg:'<path d="M46 52V16"/><path d="M33 56c-6 7-5 19 3 25 9 7 24 8 33 1 7-6 10-15 9-25l-2-14"/><path d="M58 47V33M70 50V38"/>' },
-    { id:"star",  svg:'<path d="M50 10l12 27 29 3-22 20 6 29-25-15-25 15 6-29-22-20 29-3z"/>' },
+    { id:"peach", svg:'<path d="M66 28c15 9 20 27 11 42-10 17-33 25-47 18-14-7-18-25-9-41 8-15 29-28 45-19z"/><path d="M61 28c-3-10 2-19 11-23"/><path d="M53 24c-7-6-16-6-23 0 5 7 14 9 23 5z"/>' },
+    { id:"bag",   svg:'<path d="M20 34h60l6 54H14z"/><path d="M37 40V28c0-8 6-14 13-14s13 6 13 14v12"/>' },
     { id:"spark", svg:'<path d="M50 8c3 25 17 39 42 42-25 3-39 17-42 42-3-25-17-39-42-42 25-3 39-17 42-42z"/>' },
     { id:"heart", svg:'<path d="M50 85C18 63 9 44 20 31c10-12 24-7 30 5 6-12 20-17 30-5 11 13 2 32-30 54z"/>' },
     { id:"flame", svg:'<path d="M50 90c19 0 29-13 29-27 0-20-20-27-15-49-18 9-25 23-25 34 0-7-7-12-9-18-9 9-9 20-9 33 0 15 10 27 29 27z"/>' },
     { id:"bolt",  svg:'<path d="M58 6L23 56h24l-8 40 36-56H52z"/>' },
-    { id:"bed",   svg:'<path d="M14 82V38M86 82V54"/><path d="M14 54h72"/><path d="M14 44c0-6 6-10 14-10h10c8 0 14 4 14 10"/><path d="M62 34h12c7 0 12 5 12 12v8"/>' },
+    { id:"fork",  svg:'<path d="M32 12v26M50 12v26M68 12v26"/><path d="M30 38c0 12 9 19 20 19s20-7 20-19"/><path d="M50 57v33"/>' },
     { id:"glass", svg:'<path d="M20 22h60L50 58z"/><path d="M50 58v26M34 86h32"/>' }
   ];
   var iconById = function(id){
@@ -519,7 +584,19 @@ if ("serviceWorker" in navigator) {
     return (t.icon && iconById(t.icon)) || ICONS[hash(t.id || "x") % ICONS.length];
   };
 
-  var state = { me:null, tickets:[], dur:DURS[1], color:COLORS[0], icon:ICONS[7].id, seg:"yours", local:true };
+  var state = { me:null, tickets:[], dur:DURS[1], custom:{ n:10, u:"min" },
+                color:COLORS[0], icon:ICONS[7].id, seg:"yours", local:true };
+  function durMs(){
+    if (!state.dur.custom) return state.dur.ms;
+    var n = Math.max(1, Math.min(999, parseInt(state.custom.n, 10) || 1));
+    return n * UNITS[state.custom.u];
+  }
+  function durLabel(){
+    if (!state.dur.custom) return state.dur.label;
+    var n = Math.max(1, Math.min(999, parseInt(state.custom.n, 10) || 1));
+    var u = state.custom.u === "min" ? "min" : state.custom.u;
+    return n + " " + u + (n === 1 ? "" : "s");
+  }
   var store = null;
 
   // ---------- storage ----------
@@ -539,7 +616,8 @@ if ("serviceWorker" in navigator) {
   }
   function showBanner(){
     el("banner").innerHTML = online ? ""
-      : '<div class="banner"><b>Offline.</b> Showing the last tickets this phone saw. Sending needs a connection.</div>';
+      : '<div class="banner"><b>Offline.</b> Showing the last coupons this phone saw. Sending needs a connection.</div>';
+    alertsBanner();
   }
 
   var fromRow = function(r){
@@ -602,7 +680,11 @@ if ("serviceWorker" in navigator) {
   function serial(){ return String(Math.floor(Math.random()*9000)+1000); }
   function uid(){ return "t" + Date.now().toString(36) + Math.random().toString(36).slice(2,7); }
   function hash(s){ var h = 0; for (var i=0;i<s.length;i++){ h = (h*31 + s.charCodeAt(i)) | 0; } return Math.abs(h); }
-  function statusOf(t, now){ return t.state === "torn" ? "torn" : (t.expiresAt <= now ? "lapsed" : "live"); }
+  function statusOf(t, now){
+    if (t.state === "torn") return "torn";
+    if (t.state === "claimed") return "claimed";      // ripped, waiting to be accepted
+    return t.expiresAt <= now ? "lapsed" : "live";
+  }
   function fmt(ms){
     if (ms <= 0) return "gone";
     var s = Math.floor(ms/1000), d = Math.floor(s/86400), h = Math.floor(s%86400/3600),
@@ -622,25 +704,157 @@ if ("serviceWorker" in navigator) {
         : { day:"numeric", month:"short", year:"numeric" });
     } catch(e){ return ""; }
   }
-  var enjoyTimer = null;
-  function enjoy(text){
-    var box = el("enjoy");
-    el("enjoy-what").textContent = text;
-    box.hidden = false;
-    // a one-shot CSS animation will not replay on an element that is merely
-    // re-shown, so restart it by hand or the second tear opens at opacity 0
-    ["enjoy-h", "enjoy-what"].forEach(function(id){
+  // a barcode built from the coupon's own number
+  function barcode(into, serial){
+    into.innerHTML = "";
+    var seed = hash(String(serial || "0000") + "bc");
+    for (var i = 0; i < 34; i++){
+      var b = document.createElement("i");
+      var w = 2 + ((seed >> (i % 12)) + i * 7) % 5;
+      b.style.width = w + "px";
+      b.style.opacity = ((seed >> (i % 9)) + i) % 4 === 0 ? "0" : "1";
+      into.appendChild(b);
+    }
+    var lab = document.createElement("span");
+    lab.textContent = "R C N  " + String(serial || "0000").split("").join(" ");
+    into.appendChild(lab);
+  }
+
+  var PEND_KEY = "racooness.pending.v1";
+  function pending(){
+    try { var v = JSON.parse(localStorage.getItem(PEND_KEY) || "[]"); return Array.isArray(v) ? v : []; }
+    catch(e){ return []; }
+  }
+  function pendingAdd(id){
+    var l = pending();
+    if (l.indexOf(id) < 0) l.push(id);
+    try { localStorage.setItem(PEND_KEY, JSON.stringify(l.slice(-20))); } catch(e){}
+  }
+  function pendingDrop(id){
+    try { localStorage.setItem(PEND_KEY, JSON.stringify(pending().filter(function(x){ return x !== id; }))); } catch(e){}
+  }
+
+  var enjoyTimer = null, enjoyId = null;
+  function replay(ids){
+    ids.forEach(function(id){
       var n = el(id);
+      if (!n) return;
       n.style.animation = "none";
       void n.offsetWidth;
       n.style.animation = "";
     });
+  }
+
+  // mode "pending": ripped, waiting on the other person. "done": they accepted.
+  function showEnjoy(t, mode){
+    enjoyId = t.id;
+    var box = el("enjoy");
+    box.classList.toggle("pending", mode === "pending");
+    el("enjoy-h").textContent = mode === "pending" ? "Claimed" : "Enjoy";
+    el("enjoy-what").textContent = t.text;
+    barcode(el("enjoy-bar"), t.serial);
+    el("enjoy-note").textContent = mode === "pending"
+      ? "Show this to " + PEOPLE[t.from].short + " \u2014 waiting for them to accept"
+      : PEOPLE[t.from].short + " accepted. It\u2019s yours.";
+    box.hidden = false;
+    replay(["enjoy-h", "enjoy-what", "enjoy-bar"]);
     clearTimeout(enjoyTimer);
-    enjoyTimer = setTimeout(hideEnjoy, 2600);
+    // pending has no timer on purpose: it ends when the other person accepts
+    if (mode !== "pending") enjoyTimer = setTimeout(hideEnjoy, 3000);
   }
   function hideEnjoy(){
     clearTimeout(enjoyTimer);
+    enjoyId = null;
     el("enjoy").hidden = true;
+  }
+
+  // the giver's side of the handshake
+  var acceptId = null, declined = {};
+  function showAccept(t){
+    acceptId = t.id;
+    el("accept-who").textContent = PEOPLE[t.to].short + " is claiming";
+    el("accept-what").textContent = t.text;
+    barcode(el("accept-bar"), t.serial);
+    el("accept").hidden = false;
+    replay(["accept-what", "accept-bar"]);
+  }
+  function hideAccept(){ acceptId = null; el("accept").hidden = true; }
+
+  // ---------- alerts ----------
+  // These fire while the app is running (open, or sitting in the background).
+  // A phone with the app fully closed needs a real push server; not built.
+  var notifyArmed = false;
+  function canNotify(){
+    return ("Notification" in window) && Notification.permission === "granted";
+  }
+  function notify(title, body, tag){
+    if (!canNotify()) return;
+    var opts = { body:body, tag:tag, icon:"icons/icon-192.png", badge:"icons/icon-192.png" };
+    if (navigator.serviceWorker && navigator.serviceWorker.ready){
+      navigator.serviceWorker.ready.then(function(reg){
+        if (reg && reg.showNotification) reg.showNotification(title, opts);
+        else new Notification(title, opts);
+      })["catch"](function(){});
+    } else {
+      try { new Notification(title, opts); } catch(e){}
+    }
+  }
+  function alertsBanner(){
+    if (!("Notification" in window)) return;
+    if (Notification.permission !== "default") return;
+    if (el("alertbar")) return;
+    var d = document.createElement("div");
+    d.className = "banner alertbar";
+    d.id = "alertbar";
+    d.innerHTML = '<b>Get a buzz when a coupon lands.</b> ' +
+      '<button type="button" id="alerts-on">Turn on alerts</button>';
+    el("banner").appendChild(d);
+    el("alerts-on").addEventListener("click", function(){
+      Notification.requestPermission().then(function(){
+        var n = el("alertbar"); if (n) n.remove();
+      });
+    });
+  }
+
+  // watch the list for both halves of the handshake
+  var lastState = {};
+  function handshake(){
+    var mine = null, theirs = null;
+    state.tickets.forEach(function(t){
+      var was = lastState[t.id];
+      var isNew = !(t.id in lastState);
+      lastState[t.id] = t.state;
+
+      if (notifyArmed && isNew && t.to === state.me && t.state === "live"){
+        notify(PEOPLE[t.from].short + " sent you a coupon", t.text, "new-" + t.id);
+      }
+      if (notifyArmed && t.from === state.me && t.state === "claimed" && was !== "claimed"){
+        notify(PEOPLE[t.to].short + " is claiming a coupon", t.text, "claim-" + t.id);
+      }
+      if (notifyArmed && t.to === state.me && t.state === "torn" && was === "claimed"){
+        notify(PEOPLE[t.from].short + " accepted", t.text, "ok-" + t.id);
+      }
+
+      // either seen live, or accepted while this phone was closed
+      if (t.to === state.me && t.state === "torn" && !mine &&
+          (was === "claimed" || pending().indexOf(t.id) >= 0)) mine = t;
+      if (t.from === state.me && t.state === "claimed" && !declined[t.id] && !theirs) theirs = t;
+    });
+    notifyArmed = true;   // the very first list is history, not news
+    pending().forEach(function(id){
+      var t = state.tickets.filter(function(x){ return x.id === id; })[0];
+      if (!t || (t.state !== "claimed" && t.state !== "torn")) pendingDrop(id);
+    });
+    if (mine){ pendingDrop(mine.id); showEnjoy(mine, "done"); }
+    else if (enjoyId){
+      var cur = state.tickets.filter(function(t){ return t.id === enjoyId; })[0];
+      if (cur && cur.state === "torn") showEnjoy(cur, "done");
+    }
+    if (theirs && acceptId !== theirs.id && el("enjoy").hidden) showAccept(theirs);
+    if (acceptId){
+      var a = state.tickets.filter(function(t){ return t.id === acceptId; })[0];
+      if (!a || a.state !== "claimed") hideAccept();
+    }
   }
 
   var toastTimer = null;
@@ -684,16 +898,19 @@ if ("serviceWorker" in navigator) {
   var topZ = 40;
 
   function ticketNode(t, now, opts){
-    var live = opts.live, canTear = opts.canTear, received = opts.received;
+    var live = opts.live, received = opts.received;
+    var claimed = t.state === "claimed";
+    var canTear = opts.canTear && !claimed;
     var left = t.expiresAt - now;
     var seed = hash(t.id);
 
     var node = document.createElement("div");
     node.className = "tk" + (live ? "" : " gone") + (canTear ? "" : " given") +
-                     (live && left < 86400000 ? " urgent" : "");
+                     (live && left < 3600000 ? " blink" : "") +
+                     (claimed ? " claimed" : "");
     // deterministic scatter so nothing jumps between renders
-    var ang = ((seed % 640) / 100 - 3.2) * (live ? 1 : 0.5);
-    var off = (seed >> 5) % 25 - 12;
+    var ang = ((seed % 1100) / 100 - 5.5) * (live ? 1 : 0.35);
+    var off = (seed >> 5) % 33 - 16;
     node.style.transform = "rotate(" + ang.toFixed(2) + "deg)";
     if (live){
       node.style.marginLeft = Math.max(0, off) + "px";
@@ -722,7 +939,7 @@ if ("serviceWorker" in navigator) {
     line.textContent = t.text;
     if (live){
       var i = document.createElement("i");
-      i.textContent = "ticket";
+      i.textContent = "coupon";
       line.appendChild(i);
     }
     txt.appendChild(line);
@@ -740,7 +957,7 @@ if ("serviceWorker" in navigator) {
     meta.className = "meta";
     var who = received ? ("From " + PEOPLE[t.from].short) : ("To " + PEOPLE[t.to].short);
     var l1 = document.createElement("span");
-    l1.textContent = who + " · No." + (t.serial || "0000");
+    l1.textContent = who;
     meta.appendChild(l1);
     var l2 = document.createElement("span");
     if (live){
@@ -773,11 +990,15 @@ if ("serviceWorker" in navigator) {
     vert.className = "vert";
     if (live){
       var em = document.createElement("em");
-      em.textContent = canTear ? (left < 86400000 ? "Hurry" : "Tear") : "Wait";
+      em.textContent = claimed ? "Sent" : (canTear ? (left < 3600000 ? "Hurry" : "Rip") : "Wait");
       vert.appendChild(em);
+      var no = document.createElement("span");
+      no.className = "no";
+      no.textContent = "No." + (t.serial || "0000");
+      vert.appendChild(no);
     } else {
       var b2 = document.createElement("b");
-      b2.textContent = t.state === "torn" ? "TORN" : "EXPIRED";
+      b2.textContent = t.state === "torn" ? "USED" : "EXPIRED";
       vert.appendChild(b2);
     }
     rail.appendChild(vert);
@@ -786,8 +1007,13 @@ if ("serviceWorker" in navigator) {
     if (live && canTear){
       rail.setAttribute("role","button");
       rail.setAttribute("tabindex","0");
-      rail.setAttribute("aria-label","Tear off to cash in: " + t.text);
+      rail.setAttribute("aria-label","Rip off to cash in: " + t.text);
       attachTear(node, rail, t);
+    }
+
+    if (claimed && received){
+      body.style.cursor = "pointer";
+      body.addEventListener("click", function(){ showEnjoy(t, "pending"); });
     }
 
     node.appendChild(card);
@@ -797,7 +1023,7 @@ if ("serviceWorker" in navigator) {
       del.type = "button";
       del.className = "del";
       del.textContent = "\u2715";
-      del.setAttribute("aria-label", "Take back this ticket: " + t.text);
+      del.setAttribute("aria-label", "Take back this coupon: " + t.text);
       var armTimer = null;
       del.addEventListener("click", function(e){
         e.stopPropagation();
@@ -866,13 +1092,13 @@ if ("serviceWorker" in navigator) {
       node.classList.add("torn");
       var wait = window.matchMedia("(prefers-reduced-motion: reduce)").matches ? 0 : 520;
       new Promise(function(res){ setTimeout(res, wait); })
-        .then(function(){ return store.patch(t.id, { state:"torn", tornAt: Date.now() }); })
-        .then(function(){ enjoy(t.text); })
+        .then(function(){ return store.patch(t.id, { state:"claimed", tornAt: Date.now() }); })
+        .then(function(){ pendingAdd(t.id); showEnjoy(t, "pending"); })
         ["catch"](function(err){
           done = false;
           node.classList.remove("torn");
           if (err && err.code === "invalid_argument") toast("You can read the pile but not change it");
-          else toast("Couldn't tear that one — try again");
+          else toast("Couldn't rip that one — try again");
         });
     }
   }
@@ -880,6 +1106,7 @@ if ("serviceWorker" in navigator) {
   // ---------- render ----------
   function renderAll(){
     if (!state.me) return;
+    handshake();
     el("who").textContent = PEOPLE[state.me].short + " \u2699";
 
     var now = Date.now();
@@ -890,7 +1117,8 @@ if ("serviceWorker" in navigator) {
     state.tickets.forEach(function(t){
       var belongs = mineSide ? (t.to === state.me) : (t.from === state.me);
       if (!belongs) return;
-      (statusOf(t, now) === "live" ? live : gone).push(t);
+      var st = statusOf(t, now);
+      (st === "live" || st === "claimed" ? live : gone).push(t);
     });
     live.sort(function(a,b){ return a.expiresAt - b.expiresAt; });
     gone.sort(function(a,b){ return (b.tornAt || b.expiresAt) - (a.tornAt || a.expiresAt); });
@@ -906,8 +1134,8 @@ if ("serviceWorker" in navigator) {
       e.className = "empty";
       var them = PEOPLE[other(state.me)].short;
       e.innerHTML = mineSide
-        ? "<b>Nothing to tear yet</b><span>When " + them + " sends you one it lands right here with a clock on it.</span>"
-        : "<b>You haven't sent any</b><span>Write one and " + them + " decides when to tear it.</span>";
+        ? "<b>Nothing to rip yet</b><span>When " + them + " sends you one it lands right here with a clock on it.</span>"
+        : "<b>You haven't sent any</b><span>Write one and " + them + " decides when to rip it.</span>";
       box.appendChild(e);
     } else {
       live.forEach(function(t){ box.appendChild(ticketNode(t, now, { live:true, canTear:canTear, received:mineSide })); });
@@ -973,6 +1201,7 @@ if ("serviceWorker" in navigator) {
         state.dur = d;
         Array.prototype.forEach.call(box.children, function(x){ x.setAttribute("aria-pressed","false"); });
         b.setAttribute("aria-pressed","true");
+        el("customrow").hidden = !d.custom;
         syncPreview();
       });
       box.appendChild(b);
@@ -982,7 +1211,7 @@ if ("serviceWorker" in navigator) {
   function syncPreview(){
     var txt = el("text").value.trim();
     var note = el("note").value.trim();
-    el("pv-line").firstChild.nodeValue = txt || "Your ticket";
+    el("pv-line").firstChild.nodeValue = txt || "Your coupon";
     el("pv-dd").innerHTML = (iconById(state.icon) || ICONS[0]).svg;
     var pn = el("pv-note");
     pn.textContent = note; pn.hidden = !note;
@@ -993,13 +1222,15 @@ if ("serviceWorker" in navigator) {
     if (state.me){
       el("pv-meta").innerHTML = "";
       var m1 = document.createElement("span");
-      m1.textContent = "From " + PEOPLE[state.me].short + " · No." + previewSerial;
+      m1.textContent = "From " + PEOPLE[state.me].short;
       var m2 = document.createElement("span");
       var mb = document.createElement("b");
-      mb.textContent = state.dur.label;
+      mb.textContent = durLabel();
       m2.appendChild(mb);
-      m2.appendChild(document.createTextNode(" · until " + longDate(Date.now() + state.dur.ms)));
+      m2.appendChild(document.createTextNode(" · until " + longDate(Date.now() + durMs())));
       el("pv-meta").appendChild(m1); el("pv-meta").appendChild(m2);
+      var pn = el("preview").querySelector(".rail .no");
+      if (pn) pn.textContent = "No." + previewSerial;
     }
     el("give").disabled = !txt || !state.me;
   }
@@ -1029,7 +1260,7 @@ if ("serviceWorker" in navigator) {
       id: uid(), text: txt, note: el("note").value.trim(),
       from: state.me, to: other(state.me),
       color: state.color, icon: state.icon, serial: previewSerial,
-      issuedAt: now, expiresAt: now + state.dur.ms,
+      issuedAt: now, expiresAt: now + durMs(),
       state: "live", tornAt: null
     };
     el("give").disabled = true;
@@ -1064,15 +1295,63 @@ if ("serviceWorker" in navigator) {
   buildDurs();
   el("text").addEventListener("input", syncPreview);
   el("note").addEventListener("input", syncPreview);
+  el("cu-n").addEventListener("input", function(){ state.custom.n = el("cu-n").value; syncPreview(); });
+  el("cu-u").addEventListener("change", function(){ state.custom.u = el("cu-u").value; syncPreview(); });
   el("give").addEventListener("click", issue);
   el("open-send").addEventListener("click", openSend);
   el("ov-close").addEventListener("click", closeSend);
   document.addEventListener("keydown", function(e){
-    if (e.key === "Escape" && !el("enjoy").hidden) hideEnjoy();
+    if (e.key === "Escape" && !el("accept").hidden) hideAccept();
+    else if (e.key === "Escape" && !el("enjoy").hidden) hideEnjoy();
     else if (e.key === "Escape" && !el("ov").hidden) closeSend();
   });
   el("who").addEventListener("click", openSettings);
   el("enjoy").addEventListener("click", hideEnjoy);
+  el("accept-later").addEventListener("click", function(){
+    if (acceptId) declined[acceptId] = true;
+    hideAccept();
+  });
+  el("accept-go").addEventListener("click", function(){
+    if (!acceptId) return;
+    var id = acceptId;
+    var btn = el("accept-go");
+    btn.disabled = true; btn.textContent = "\u2026";
+    store.patch(id, { state:"torn", tornAt: Date.now() }).then(function(){
+      btn.disabled = false; btn.textContent = "Accept";
+      hideAccept();
+      toast("Accepted");
+    })["catch"](function(){
+      btn.disabled = false; btn.textContent = "Accept";
+      toast("Couldn't accept that \u2014 try again");
+    });
+  });
+  var clearTimer = null;
+  el("clear-dead").addEventListener("click", function(){
+    var b = el("clear-dead");
+    if (!b.classList.contains("arm")){
+      b.classList.add("arm"); b.textContent = "Delete all?";
+      clearTimeout(clearTimer);
+      clearTimer = setTimeout(function(){ b.classList.remove("arm"); b.textContent = "Clear"; }, 3500);
+      return;
+    }
+    clearTimeout(clearTimer);
+    b.disabled = true; b.textContent = "\u2026";
+    var now = Date.now();
+    var doomed = state.tickets.filter(function(t){
+      var st = statusOf(t, now);
+      return (st === "torn" || st === "lapsed") &&
+             (t.to === state.me || t.from === state.me);
+    });
+    doomed.reduce(function(chain, t){
+      return chain.then(function(){ return store.remove(t.id); });
+    }, Promise.resolve()).then(function(){
+      b.disabled = false; b.classList.remove("arm"); b.textContent = "Clear";
+      toast("Cleared " + doomed.length + " coupon" + (doomed.length === 1 ? "" : "s"));
+    })["catch"](function(){
+      b.disabled = false; b.classList.remove("arm"); b.textContent = "Clear";
+      toast("Couldn't clear those \u2014 try again");
+    });
+  });
   el("seg-yours").addEventListener("click", function(){ state.seg = "yours"; renderAll(); });
   el("seg-given").addEventListener("click", function(){ state.seg = "given"; renderAll(); });
 
@@ -1145,6 +1424,7 @@ if ("serviceWorker" in navigator) {
       store = supaStore(client, cfg.pair);
       store.watch(function(list){ state.tickets = list; renderAll(); });
       showBanner();
+      alertsBanner();
       syncPreview();
       renderAll();
       el("setup").hidden = true;
@@ -1169,6 +1449,40 @@ if ("serviceWorker" in navigator) {
       el("su-url").value = prefill.u || "";
       el("su-key").value = prefill.k || "";
     }
+  }
+
+  // ?demo=stinky / ?demo=pinky runs the whole app on this device alone, so the
+  // app can be shown or tried with no project behind it
+  function boot(){
+  function demoStore(){
+    var KEY = "racooness.demo.v2", list = [];
+    try { list = JSON.parse(localStorage.getItem(KEY) || "[]") || []; } catch(e){ list = []; }
+    if (!Array.isArray(list)) list = [];
+    var cb = null;
+    function save(){
+      try { localStorage.setItem(KEY, JSON.stringify(list)); } catch(e){}
+      if (cb) cb(list.slice());
+    }
+    return {
+      watch:function(fn){ cb = fn; fn(list.slice()); return function(){ cb = null; }; },
+      add:function(t){ list.push(t); save(); return Promise.resolve(); },
+      patch:function(id, f){ list = list.map(function(t){ return t.id === id ? Object.assign({}, t, f) : t; }); save(); return Promise.resolve(); },
+      remove:function(id){ list = list.filter(function(t){ return t.id !== id; }); save(); return Promise.resolve(); }
+    };
+  }
+
+  var demoWho = new URLSearchParams(location.search).get("demo");
+  if (demoWho === "stinky" || demoWho === "pinky"){
+    state.me = demoWho;
+    store = demoStore();
+    store.watch(function(list){ state.tickets = list; renderAll(); });
+    el("banner").innerHTML = '<div class="banner"><b>Demo.</b> Saved on this device only. ' +
+      'Swap <b>?demo=pinky</b> and <b>?demo=stinky</b> in the address to play both sides.</div>';
+    syncPreview();
+    renderAll();
+    el("setup").hidden = true;
+    el("app").hidden = false;
+    return;
   }
 
   // a pair link configures this phone with nothing to type
@@ -1218,6 +1532,9 @@ if ("serviceWorker" in navigator) {
       tip.remove();
     });
   })();
+
+  }
+  boot();
 
   el("su-pair").addEventListener("click", function(){
     setupError("");

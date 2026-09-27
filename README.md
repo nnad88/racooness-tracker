@@ -1,4 +1,4 @@
-# Racooness Tracker
+# Racoonness Tracker
 
 An installable app for two phones. Real icon on the home screen, opens fullscreen,
 no browser bar. No App Store, no Play Store, no developer account.
@@ -50,13 +50,18 @@ You can bring the pairing links back up any time from the button at the top righ
 
 ## Worth knowing
 
-- **The links are the keys.** Anyone who opens one can read and write your tickets.
-  Send them somewhere private and don't post them anywhere public.
-  If a link ever gets out, press **Disconnect this device** and run setup again —
-  that makes a fresh code and the old links stop working.
+- **Claiming is a handshake.** Ripping a coupon does not spend it. It goes to the
+  giver as a claim with a barcode, and the coupon is only used once they hit
+  **Accept** on their phone. Until then the claimer sits on a Claimed screen.
+- **Alerts** fire when a coupon lands, when one is claimed, and when a claim is
+  accepted — but only while the app is running, open or in the background. A phone
+  with the app fully closed will not buzz; that needs a push server, which this
+  does not have.
+- **Try it with no setup:** add `?demo=stinky` to the address. Everything is saved
+  on that device only. Swap in `?demo=pinky` to play the other side.
 - **Updates.** I push a change, both phones have it next time they open the app.
-- **Offline.** It opens offline and shows the last tickets that phone saw.
-  Sending and tearing need a connection; a banner says so when you're offline.
+- **Offline.** It opens offline and shows the last coupons that phone saw.
+  Sending and ripping need a connection; a banner says so when you are offline.
 - **Free.** Supabase's free tier and GitHub Pages both cover two people easily.
   No card needed for either.
 - **Supabase pausing.** Free projects pause after about a week of no activity.
