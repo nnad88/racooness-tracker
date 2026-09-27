@@ -245,6 +245,8 @@ textarea#text:focus,input#note:focus{outline:3px solid var(--lemon);outline-offs
   padding:12px;border-radius:9px;overflow-x:auto;margin:0 0 9px;white-space:pre;-webkit-user-select:all;user-select:all}
 .mini{font-family:var(--ui);font-weight:600;font-size:13px;background:var(--grape-d);color:var(--cream);
   border:3px solid var(--grape-dd);border-radius:99px;padding:9px 15px}
+.hint{color:#A992E8;letter-spacing:0;text-transform:none;font-weight:400}
+.nb{font-family:var(--mono);font-size:10.5px;line-height:1.5;color:#A992E8;margin:-4px 0 0}
 .setup input{width:100%;background:var(--grape-d);color:var(--cream);border:3px solid var(--grape-dd);
   border-radius:8px;padding:12px;font-family:var(--mono);font-size:14px;margin-bottom:13px}
 .setup input:focus{outline:3px solid var(--lemon);outline-offset:2px}
@@ -333,13 +335,17 @@ create policy "pair only" on public.tickets
       <b>3</b>
       <div>
         <h3>Bring back two things</h3>
-        <p>In Supabase: <em>Project Settings</em> → <em>Data API</em>.</p>
-        <label class="flab" for="su-url">Project URL</label>
+        <p><em>Project Settings</em> → <em>Data API</em> for the first one, then
+          <em>Project Settings</em> → <em>API Keys</em> for the second. They are two
+          separate pages.</p>
+        <label class="flab" for="su-url">Project URL <span class="hint">— ending in /rest/v1/ is fine</span></label>
         <input id="su-url" type="url" inputmode="url" autocomplete="off" autocapitalize="off"
                spellcheck="false" placeholder="https://abcdefgh.supabase.co">
-        <label class="flab" for="su-key">Anon / publishable key</label>
+        <label class="flab" for="su-key">Publishable key <span class="hint">— older projects call it “anon public”</span></label>
         <input id="su-key" type="text" autocomplete="off" autocapitalize="off"
-               spellcheck="false" placeholder="eyJhbGciOi…">
+               spellcheck="false" placeholder="sb_publishable_… or eyJhbGciOi…">
+        <p class="nb">Never the <em>secret</em> key. That one ignores all the security
+          and would be sitting in the links you send.</p>
       </div>
     </div>
 
@@ -1183,14 +1189,20 @@ if ("serviceWorker" in navigator) {
 
   el("su-go").addEventListener("click", function(){
     setupError("");
-    var url = el("su-url").value.trim().replace(/\/+$/,"");
+    // the dashboard shows the REST endpoint, so take that shape too
+    var url = el("su-url").value.trim()
+      .replace(/\/rest\/v1\/?$/i, "")
+      .replace(/\/+$/, "");
     var key = el("su-key").value.trim();
     var whoBtn = document.querySelector('#su-who button[aria-pressed="true"]');
-    if (!/^https:\/\/[a-z0-9-]+\.supabase\.co$/i.test(url)){
+    if (!/^https:\/\/[a-z0-9-]+\.supabase\.(co|in)$/i.test(url)){
       return setupError("That project URL doesn't look right. It should look like https://abcdefgh.supabase.co");
     }
-    if (key.length < 30){
-      return setupError("That key looks too short. Copy the whole anon / publishable key.");
+    if (/^sb_secret/i.test(key) || /service_role/i.test(key)){
+      return setupError("That's the secret key — it ignores every security rule and would end up in the links you send. Go back and copy the publishable (anon) key instead.");
+    }
+    if (key.length < 20){
+      return setupError("That key looks too short. Copy the whole publishable key.");
     }
     if (!whoBtn) return setupError("Pick which one you are.");
 

@@ -12,8 +12,9 @@ no browser bar. No App Store, no Play Store, no developer account.
    Any name, any region. About two minutes to build.
 3. Step 2 gives you a block of SQL with a copy button. In Supabase:
    **SQL Editor → New query → paste → Run**.
-4. Step 3: in Supabase go to **Project Settings → Data API** and copy the
-   **Project URL** and the **anon / publishable key** back into the two boxes.
+4. Step 3: **Project Settings → Data API** for the Project URL, then
+   **Project Settings → API Keys** for the **publishable key** (older projects
+   call it *anon public*). Two separate pages. Never the *secret* key.
 5. Step 4: say which raccoon you are. Press **Start**.
 
 That's it. No file to edit, no accounts to create, nothing to sign into.
