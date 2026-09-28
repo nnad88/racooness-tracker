@@ -23,9 +23,11 @@ img{max-width:100%}
 
 :root{
   --cut-l:radial-gradient(circle 7px at 0 8px,#0000 98%,#000) 0 0/100% 16px repeat-y,
+          radial-gradient(circle 5px at 100% 9px,#0000 98%,#000) 0 0/100% 18px repeat-y,
           radial-gradient(circle 10px at 100% 0,#0000 98%,#000) 0 0/100% 100% no-repeat,
           radial-gradient(circle 10px at 100% 100%,#0000 98%,#000) 0 0/100% 100% no-repeat;
   --cut-r:radial-gradient(circle 7px at 100% 8px,#0000 98%,#000) 0 0/100% 16px repeat-y,
+          radial-gradient(circle 5px at 0 9px,#0000 98%,#000) 0 0/100% 18px repeat-y,
           radial-gradient(circle 10px at 0 0,#0000 98%,#000) 0 0/100% 100% no-repeat,
           radial-gradient(circle 10px at 0 100%,#0000 98%,#000) 0 0/100% 100% no-repeat;
   color-scheme: dark;
@@ -83,8 +85,8 @@ main{flex:1;position:relative;z-index:0;padding:20px 13px calc(40px + env(safe-a
 /* ---------- ticket ---------- */
 .tk{position:relative;margin-bottom:-9px;--rip:0}
 .tk .card{display:flex;color:var(--ink);position:relative}
-.tk .body{flex:1;min-width:0;background:var(--tc,#FF6B6B);display:flex;align-items:flex-start;gap:10px;
-  padding:12px 10px 12px 14px;min-height:112px;transition:transform .5s ease-in,opacity .5s;
+.tk .body{flex:1;min-width:0;position:relative;background:var(--tc,#FF6B6B);display:flex;align-items:flex-start;gap:10px;
+  padding:12px 18px 12px 14px;min-height:112px;transition:transform .5s ease-in,opacity .5s;
   -webkit-mask:var(--cut-l);-webkit-mask-composite:source-in;mask:var(--cut-l);mask-composite:intersect}
 .tk .txt{flex:1;min-width:0;display:flex;flex-direction:column}
 .tk .line{font-family:var(--fat);font-weight:400;font-size:clamp(19px,5.6vw,24px);line-height:.92;margin:0;
@@ -92,12 +94,14 @@ main{flex:1;position:relative;z-index:0;padding:20px 13px calc(40px + env(safe-a
 .tk .line i{font-style:normal;display:block;margin-top:1px}
 .tk .doodle{width:clamp(56px,17vw,80px);height:auto;aspect-ratio:1;flex:none;margin:1px 0 0;display:block;opacity:.92}
 .tk .doodle path,.tk .doodle circle{stroke:var(--ink);fill:none;stroke-width:5.5;stroke-linecap:round;stroke-linejoin:round}
-.tk .note{font-family:var(--mono);font-weight:500;font-size:clamp(11px,3.3vw,12.5px);line-height:1.35;
-  margin:7px 0 0;opacity:.78}
-.tk .meta{font-family:var(--mono);font-weight:500;font-size:9px;letter-spacing:.11em;text-transform:uppercase;
-  opacity:.6;margin-top:auto;padding-top:10px;display:flex;flex-direction:column;gap:3px;line-height:1.3}
-.tk .meta b{font-weight:500;opacity:1;font-size:10px;letter-spacing:.06em}
-.tk.gone .meta b{font-size:9px}
+.tk .note{font-family:var(--mono);font-weight:500;font-size:clamp(11.5px,3.5vw,13px);line-height:1.35;
+  margin:8px 0 0;opacity:.8}
+.tk .meta{font-family:var(--mono);font-weight:500;font-size:9px;letter-spacing:.08em;text-transform:uppercase;
+  opacity:.6;margin-top:auto;padding-top:10px;line-height:1.3;white-space:nowrap;overflow:hidden}
+.tk .meta b{font-weight:500}
+/* red text vanishes on a red coupon, so the short clock gets its own pill */
+.tk .meta.soon{opacity:1;background:#B3002F;color:#FFF6E9;font-size:10px;letter-spacing:.05em;
+  padding:4px 9px;border-radius:99px;width:max-content;max-width:100%}
 
 /* right rail = the tear-off */
 .tk .rail{width:clamp(82px,27%,132px);flex:none;position:relative;display:flex;align-items:center;justify-content:center;
@@ -105,17 +109,18 @@ main{flex:1;position:relative;z-index:0;padding:20px 13px calc(40px + env(safe-a
   background:var(--tc,#FF6B6B);transition:transform .22s cubic-bezier(.3,1.4,.5,1);
   -webkit-mask:var(--cut-r);-webkit-mask-composite:source-in;mask:var(--cut-r);mask-composite:intersect}
 .tk .rail.dragging{transition:none}
-.tk .rail::before{content:"";position:absolute;left:0;top:0;bottom:0;width:7px;
-  background:radial-gradient(circle 2.6px at 3.5px 7px,rgba(20,20,20,.42) 98%,#0000) 0 0/7px 14px repeat-y}
-.tk.gone .rail::before{background:radial-gradient(circle 2px at 3px 6px,rgba(58,53,80,.45) 98%,#0000) 0 0/6px 12px repeat-y;width:6px}
-.tk .rail .vert{writing-mode:vertical-rl;font-family:var(--mono);font-size:11px;font-weight:500;
-  letter-spacing:.14em;text-transform:uppercase;white-space:nowrap;display:flex;align-items:center;
-  justify-content:center;padding:8px 0;gap:9px}
-.tk .rail .vert b{font-weight:500}
-.tk .rail .vert em{font-style:normal;font-family:var(--fat);font-size:clamp(22px,7vw,30px);letter-spacing:0;text-transform:uppercase}
-.tk .rail .vert .no{font-family:var(--mono);font-size:9px;letter-spacing:.12em;opacity:.6}
-.tk.blink .rail{animation:blinkrail .9s steps(2,end) infinite}
-@keyframes blinkrail{50%{opacity:.35}}
+.tk .rail .vert{writing-mode:vertical-rl;display:flex;align-items:center;justify-content:center;
+  padding:12px 0 12px 16px;max-height:100%;overflow:hidden}
+.tk .rail .vert em{font-style:normal;font-family:var(--fat);font-weight:400;
+  font-size:clamp(17px,5.2vw,23px);line-height:1;text-transform:uppercase;letter-spacing:-.01em;
+  max-height:100%;overflow:hidden}
+.tk .rail .vert b{font-family:var(--mono);font-weight:500;font-size:11px;letter-spacing:.14em;text-transform:uppercase}
+/* the number on both halves, each reading the other way, like a cloakroom stub */
+.tk .ser{position:absolute;writing-mode:vertical-rl;font-family:var(--mono);font-size:9px;font-weight:500;
+  letter-spacing:.16em;opacity:.5;white-space:nowrap;pointer-events:none;top:50%;transform:translateY(-50%)}
+.tk .body .ser{right:5px;transform:translateY(-50%) rotate(180deg)}
+.tk .rail .ser{left:11px}
+.tk.gone .ser{display:none}
 .tk.claimed .body,.tk.claimed .rail{filter:saturate(.5)}
 .tk.torn .rail{transform:translateX(86%) rotate(10deg);opacity:0;transition:transform .5s ease-in,opacity .5s}
 .tk.torn .body{transform:translateX(-32%) rotate(-7deg);opacity:0}
@@ -246,7 +251,10 @@ textarea#text:focus,input#note:focus{outline:3px solid var(--lemon);outline-offs
 .barcode.dark i{background:var(--grape-d)}
 .barcode.dark span{color:var(--grape-d)}
 .enjoy.pending h2{color:var(--cream)}
-.enjoy.pending .pips{display:none}
+.enjoy.pending .pips,.enjoy.later .pips{display:none}
+.enjoy.later{background:var(--grape-d)}
+.enjoy.later h2{color:var(--lemon);text-shadow:5px 5px 0 var(--hot),10px 10px 0 var(--grape-dd)}
+.enjoy.later .barcode i{opacity:.28}
 
 .accept{position:fixed;inset:0;z-index:985;background:var(--lemon);display:grid;place-items:center;
   padding:26px;text-align:center}
@@ -675,7 +683,7 @@ if ("serviceWorker" in navigator) {
       patch:function(id, f){
         var row = {};
         if (f.state) row.state = f.state;
-        if (f.tornAt) row.torn_at = new Date(f.tornAt).toISOString();
+        if ("tornAt" in f) row.torn_at = f.tornAt ? new Date(f.tornAt).toISOString() : null;
         return client.from("tickets").update(row).eq("id", id).then(after);
       },
       remove:function(id){ return client.from("tickets")["delete"]().eq("id", id).then(after); }
@@ -754,20 +762,21 @@ if ("serviceWorker" in navigator) {
 
   // mode "pending": ripped, waiting on the other person. "done": they accepted.
   function showEnjoy(t, mode){
-    enjoyId = t.id;
+    enjoyId = mode === "later" ? null : t.id;
     var box = el("enjoy");
     box.classList.toggle("pending", mode === "pending");
-    el("enjoy-h").textContent = mode === "pending" ? "Claimed" : "Enjoy";
+    box.classList.toggle("later", mode === "later");
+    el("enjoy-h").textContent =
+      mode === "pending" ? "Claimed" : (mode === "later" ? "Try later" : "Enjoy");
     el("enjoy-what").textContent = t.text;
     barcode(el("enjoy-bar"), t.serial);
-    el("enjoy-note").textContent = mode === "pending"
-      ? "Show this to " + PEOPLE[t.from].short + " \u2014 waiting for them to accept"
-      : PEOPLE[t.from].short + " accepted. It\u2019s yours.";
+    el("enjoy-note").textContent =
+      mode === "pending" ? "Show this to " + PEOPLE[t.from].short + " \u2014 waiting for them to accept"
+    : mode === "later"  ? PEOPLE[t.from].short + " can\u2019t right now. It\u2019s back in your pile \u2014 try again whenever."
+    :                     PEOPLE[t.from].short + " accepted. It\u2019s yours.";
     box.hidden = false;
     replay(["enjoy-h", "enjoy-what", "enjoy-bar"]);
-    clearTimeout(enjoyTimer);
-    // pending has no timer on purpose: it ends when the other person accepts
-    if (mode !== "pending") enjoyTimer = setTimeout(hideEnjoy, 3000);
+    clearTimeout(enjoyTimer);   // no timer in any mode: it closes on a tap
   }
   function hideEnjoy(){
     clearTimeout(enjoyTimer);
@@ -826,7 +835,7 @@ if ("serviceWorker" in navigator) {
   // watch the list for both halves of the handshake
   var lastState = {};
   function handshake(){
-    var mine = null, theirs = null;
+    var mine = null, theirs = null, turned = null;
     state.tickets.forEach(function(t){
       var was = lastState[t.id];
       var isNew = !(t.id in lastState);
@@ -845,14 +854,23 @@ if ("serviceWorker" in navigator) {
       // either seen live, or accepted while this phone was closed
       if (t.to === state.me && t.state === "torn" && !mine &&
           (was === "claimed" || pending().indexOf(t.id) >= 0)) mine = t;
+      // turned down: it is live again and this phone is the one that claimed it
+      if (t.to === state.me && t.state === "live" && !turned &&
+          pending().indexOf(t.id) >= 0) turned = t;
+      if (t.state === "live" && declined[t.id]) delete declined[t.id];
       if (t.from === state.me && t.state === "claimed" && !declined[t.id] && !theirs) theirs = t;
     });
     notifyArmed = true;   // the very first list is history, not news
+    // only forget a pending claim once the coupon is gone or out of time —
+    // a coupon back at "live" is the handed-back signal, not stale state
     pending().forEach(function(id){
       var t = state.tickets.filter(function(x){ return x.id === id; })[0];
-      if (!t || (t.state !== "claimed" && t.state !== "torn")) pendingDrop(id);
+      if (!t) return pendingDrop(id);
+      if (t.to !== state.me) return;              // not this phone's claim to manage
+      if (statusOf(t, Date.now()) === "lapsed") pendingDrop(id);
     });
-    if (mine){ pendingDrop(mine.id); showEnjoy(mine, "done"); }
+    if (turned){ pendingDrop(turned.id); hideEnjoy(); showEnjoy(turned, "later"); }
+    else if (mine){ pendingDrop(mine.id); showEnjoy(mine, "done"); }
     else if (enjoyId){
       var cur = state.tickets.filter(function(t){ return t.id === enjoyId; })[0];
       if (cur && cur.state === "torn") showEnjoy(cur, "done");
@@ -913,7 +931,6 @@ if ("serviceWorker" in navigator) {
 
     var node = document.createElement("div");
     node.className = "tk" + (live ? "" : " gone") + (canTear ? "" : " given") +
-                     (live && left < 3600000 ? " blink" : "") +
                      (claimed ? " claimed" : "");
     // deterministic scatter so nothing jumps between renders
     var ang = ((seed % 1100) / 100 - 5.5) * (live ? 1 : 0.35);
@@ -962,22 +979,17 @@ if ("serviceWorker" in navigator) {
 
     var meta = document.createElement("div");
     meta.className = "meta";
-    var who = received ? ("From " + PEOPLE[t.from].short) : ("To " + PEOPLE[t.to].short);
-    var l1 = document.createElement("span");
-    l1.textContent = who;
-    meta.appendChild(l1);
-    var l2 = document.createElement("span");
     if (live){
+      if (left < 86400000) meta.classList.add("soon");
       var cd = document.createElement("b");
-      cd.textContent = fmt(left) + " left";
-      l2.appendChild(cd);
-      l2.appendChild(document.createTextNode(" · until " + longDate(t.expiresAt)));
-      clocks.push({ b:cd, node:node, expiresAt:t.expiresAt });
+      cd.textContent = fmt(left);
+      meta.appendChild(cd);
+      meta.appendChild(document.createTextNode(" · " + longDate(t.expiresAt)));
+      clocks.push({ b:cd, node:node, meta:meta, expiresAt:t.expiresAt });
     } else {
-      l2.textContent = t.state === "torn" ? ("Torn " + shortDate(t.tornAt || t.expiresAt))
-                                          : ("Ran out " + shortDate(t.expiresAt));
+      meta.textContent = t.state === "torn" ? ("Used " + shortDate(t.tornAt || t.expiresAt))
+                                            : ("Ran out " + shortDate(t.expiresAt));
     }
-    meta.appendChild(l2);
     txt.appendChild(meta);
     body.appendChild(txt);
 
@@ -997,12 +1009,15 @@ if ("serviceWorker" in navigator) {
     vert.className = "vert";
     if (live){
       var em = document.createElement("em");
-      em.textContent = claimed ? "Sent" : (canTear ? (left < 3600000 ? "Hurry" : "Rip") : "Wait");
+      em.textContent = t.text;
       vert.appendChild(em);
-      var no = document.createElement("span");
-      no.className = "no";
-      no.textContent = "No." + (t.serial || "0000");
-      vert.appendChild(no);
+      // same number on each side of the seam, facing opposite ways
+      ["body", "rail"].forEach(function(where){
+        var sr = document.createElement("span");
+        sr.className = "ser";
+        sr.textContent = "No." + (t.serial || "0000");
+        (where === "body" ? body : rail).appendChild(sr);
+      });
     } else {
       var b2 = document.createElement("b");
       b2.textContent = t.state === "torn" ? "USED" : "EXPIRED";
@@ -1290,8 +1305,8 @@ if ("serviceWorker" in navigator) {
     clocks.forEach(function(c){
       var left = c.expiresAt - now;
       if (left <= 0){ flipped = true; return; }
-      c.b.textContent = fmt(left) + " left";
-      if (left < 86400000) c.node.classList.add("urgent");
+      c.b.textContent = fmt(left);
+      if (left < 86400000 && c.meta) c.meta.classList.add("soon");
     });
     if (flipped) renderAll();
   }, 1000);
@@ -1315,8 +1330,21 @@ if ("serviceWorker" in navigator) {
   el("who").addEventListener("click", openSettings);
   el("enjoy").addEventListener("click", hideEnjoy);
   el("accept-later").addEventListener("click", function(){
-    if (acceptId) declined[acceptId] = true;
-    hideAccept();
+    if (!acceptId) return hideAccept();
+    var id = acceptId;
+    var b = el("accept-later");
+    b.disabled = true;
+    // hand it straight back so they can claim again later
+    store.patch(id, { state:"live", tornAt:null }).then(function(){
+      b.disabled = false;
+      hideAccept();
+      toast("Sent back for later");
+    })["catch"](function(){
+      b.disabled = false;
+      declined[id] = true;
+      hideAccept();
+      toast("Couldn't send it back \u2014 try again");
+    });
   });
   el("accept-go").addEventListener("click", function(){
     if (!acceptId) return;
