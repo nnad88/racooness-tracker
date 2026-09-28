@@ -80,13 +80,13 @@ h1 .b{color:var(--lemon)}
 .alertbar button{font-family:var(--fat);font-size:14px;background:var(--lemon);color:var(--grape-d);
   border-radius:99px;padding:8px 14px;line-height:1}
 
-main{flex:1;position:relative;z-index:0;padding:20px 13px calc(40px + env(safe-area-inset-bottom,0px));overflow-x:clip}
+main{flex:1;position:relative;z-index:0;padding:20px 18px calc(40px + env(safe-area-inset-bottom,0px));overflow-x:clip}
 
 /* ---------- ticket ---------- */
 .tk{position:relative;margin-bottom:-9px;--rip:0}
 .tk .card{display:flex;color:var(--ink);position:relative}
 .tk .body{flex:1;min-width:0;position:relative;background:var(--tc,#FF6B6B);display:flex;align-items:flex-start;gap:10px;
-  padding:12px 18px 12px 14px;min-height:112px;transition:transform .5s ease-in,opacity .5s;
+  padding:11px 18px 11px 14px;min-height:104px;transition:transform .5s ease-in,opacity .5s;
   -webkit-mask:var(--cut-l);-webkit-mask-composite:source-in;mask:var(--cut-l);mask-composite:intersect}
 .tk .txt{flex:1;min-width:0;display:flex;flex-direction:column}
 .tk .line{font-family:var(--fat);font-weight:400;font-size:clamp(19px,5.6vw,24px);line-height:.92;margin:0;
@@ -109,12 +109,13 @@ main{flex:1;position:relative;z-index:0;padding:20px 13px calc(40px + env(safe-a
   background:var(--tc,#FF6B6B);transition:transform .22s cubic-bezier(.3,1.4,.5,1);
   -webkit-mask:var(--cut-r);-webkit-mask-composite:source-in;mask:var(--cut-r);mask-composite:intersect}
 .tk .rail.dragging{transition:none}
-.tk .rail .vert{writing-mode:vertical-rl;display:flex;align-items:center;justify-content:center;
-  padding:12px 0 12px 16px;max-height:100%;overflow:hidden}
-.tk .rail .vert em{font-style:normal;font-family:var(--fat);font-weight:400;
-  font-size:clamp(17px,5.2vw,23px);line-height:1;text-transform:uppercase;letter-spacing:-.01em;
-  max-height:100%;overflow:hidden}
-.tk .rail .vert b{font-family:var(--mono);font-weight:500;font-size:11px;letter-spacing:.14em;text-transform:uppercase}
+.tk .rail .vert{position:absolute;inset:9px 7px 9px 17px;display:flex;align-items:center;
+  justify-content:center;overflow:hidden;pointer-events:none}
+.tk .rail .vert em{writing-mode:vertical-rl;font-style:normal;font-family:var(--fat);font-weight:400;
+  line-height:1.02;text-transform:uppercase;letter-spacing:-.015em;white-space:normal;text-align:center;
+  max-height:100%;max-width:100%;overflow:hidden}
+.tk .rail .vert b{writing-mode:vertical-rl;font-family:var(--mono);font-weight:500;font-size:11px;
+  letter-spacing:.14em;text-transform:uppercase}
 /* the number on both halves, each reading the other way, like a cloakroom stub */
 .tk .ser{position:absolute;writing-mode:vertical-rl;font-family:var(--mono);font-size:9px;font-weight:500;
   letter-spacing:.16em;opacity:.5;white-space:nowrap;pointer-events:none;top:50%;transform:translateY(-50%)}
@@ -695,6 +696,16 @@ if ("serviceWorker" in navigator) {
   function serial(){ return String(Math.floor(Math.random()*9000)+1000); }
   function uid(){ return "t" + Date.now().toString(36) + Math.random().toString(36).slice(2,7); }
   function hash(s){ var h = 0; for (var i=0;i<s.length;i++){ h = (h*31 + s.charCodeAt(i)) | 0; } return Math.abs(h); }
+  // the stub never grows the coupon, so long titles step down instead
+  function stubSize(txt){
+    var n = (txt || "").length;
+    if (n <= 10) return "clamp(17px,5.6vw,24px)";
+    if (n <= 16) return "clamp(15px,5vw,21px)";
+    if (n <= 24) return "clamp(13px,4.3vw,18px)";
+    if (n <= 34) return "clamp(11px,3.6vw,15px)";
+    return "clamp(10px,3.1vw,13px)";
+  }
+
   function statusOf(t, now){
     if (t.state === "torn") return "torn";
     if (t.state === "claimed") return "claimed";      // ripped, waiting to be accepted
@@ -933,8 +944,10 @@ if ("serviceWorker" in navigator) {
     node.className = "tk" + (live ? "" : " gone") + (canTear ? "" : " given") +
                      (claimed ? " claimed" : "");
     // deterministic scatter so nothing jumps between renders
-    var ang = ((seed % 1100) / 100 - 5.5) * (live ? 1 : 0.35);
-    var off = (seed >> 5) % 33 - 16;
+    // rotation widens the footprint, so keep the tilt and offsets inside the
+    // gutter or the stub text gets clipped at the edge
+    var ang = ((seed % 900) / 100 - 4.5) * (live ? 1 : 0.35);
+    var off = (seed >> 5) % 21 - 10;
     node.style.transform = "rotate(" + ang.toFixed(2) + "deg)";
     if (live){
       node.style.marginLeft = Math.max(0, off) + "px";
@@ -1010,6 +1023,7 @@ if ("serviceWorker" in navigator) {
     if (live){
       var em = document.createElement("em");
       em.textContent = t.text;
+      em.style.fontSize = stubSize(t.text);
       vert.appendChild(em);
       // same number on each side of the seam, facing opposite ways
       ["body", "rail"].forEach(function(where){
