@@ -479,11 +479,15 @@ create policy "pair only" on public.tickets
           <div class="txt">
             <p class="line" id="pv-line">Your coupon<i id="pv-i">coupon</i></p>
             <p class="note" id="pv-note" hidden></p>
-            <div class="meta" id="pv-meta"><span>From —</span></div>
+            <div class="meta" id="pv-meta"></div>
           </div>
           <svg class="doodle" id="pv-dd" viewBox="0 0 100 100" aria-hidden="true"></svg>
+          <span class="ser" id="pv-ser-b"></span>
         </div>
-        <div class="rail"><span class="vert"><em>Rip</em><span class="no">No.0000</span></span></div>
+        <div class="rail">
+          <span class="vert"><em id="pv-stub"></em></span>
+          <span class="ser" id="pv-ser-r"></span>
+        </div>
       </div>
     </div>
 
@@ -704,6 +708,24 @@ if ("serviceWorker" in navigator) {
     if (n <= 24) return "clamp(13px,4.3vw,18px)";
     if (n <= 34) return "clamp(11px,3.6vw,15px)";
     return "clamp(10px,3.1vw,13px)";
+  }
+
+  // the length guess gets it close; this shrinks until it actually fits the stub
+  function fitStub(em){
+    var box = em.parentNode;
+    if (!box || !box.clientHeight) return;        // not laid out yet
+    // start from the length guess again, or a re-fit can only ever shrink
+    if (em.dataset.base) em.style.fontSize = em.dataset.base;
+    var size = parseFloat(getComputedStyle(em).fontSize) || 20;
+    var guard = 0;
+    while (guard++ < 30 && size > 9 &&
+           (em.scrollHeight > box.clientHeight + 1 || em.scrollWidth > box.clientWidth + 1)){
+      size -= 1;
+      em.style.fontSize = size + "px";
+    }
+  }
+  function fitAllStubs(root){
+    Array.prototype.forEach.call((root || document).querySelectorAll(".rail .vert em"), fitStub);
   }
 
   function statusOf(t, now){
@@ -1024,6 +1046,7 @@ if ("serviceWorker" in navigator) {
       var em = document.createElement("em");
       em.textContent = t.text;
       em.style.fontSize = stubSize(t.text);
+      em.dataset.base = em.style.fontSize;
       vert.appendChild(em);
       // same number on each side of the seam, facing opposite ways
       ["body", "rail"].forEach(function(where){
@@ -1185,6 +1208,7 @@ if ("serviceWorker" in navigator) {
       el("deadcount").textContent = torn + " torn · " + (gone.length - torn) + " ran out";
       gone.forEach(function(t){ dbox.appendChild(ticketNode(t, now, { live:false, canTear:false, received:mineSide })); });
     }
+    fitAllStubs(el("live"));
   }
 
   // ---------- send overlay ----------
@@ -1255,19 +1279,23 @@ if ("serviceWorker" in navigator) {
     pc.style.setProperty("--tc", state.color);
     pc.querySelector(".body").style.setProperty("--tc", state.color);
     pc.querySelector(".rail").style.setProperty("--tc", state.color);
-    if (state.me){
-      el("pv-meta").innerHTML = "";
-      var m1 = document.createElement("span");
-      m1.textContent = "From " + PEOPLE[state.me].short;
-      var m2 = document.createElement("span");
-      var mb = document.createElement("b");
-      mb.textContent = durLabel();
-      m2.appendChild(mb);
-      m2.appendChild(document.createTextNode(" · until " + longDate(Date.now() + durMs())));
-      el("pv-meta").appendChild(m1); el("pv-meta").appendChild(m2);
-      var pn = el("preview").querySelector(".rail .no");
-      if (pn) pn.textContent = "No." + previewSerial;
-    }
+
+    // the stub shows the coupon's own words, exactly as it will once sent
+    var stub = txt || "Your coupon";
+    el("pv-stub").textContent = stub;
+    el("pv-stub").style.fontSize = stubSize(stub);
+    el("pv-stub").dataset.base = el("pv-stub").style.fontSize;
+    el("pv-ser-b").textContent = "No." + previewSerial;
+    el("pv-ser-r").textContent = "No." + previewSerial;
+
+    var meta = el("pv-meta");
+    meta.innerHTML = "";
+    meta.classList.toggle("soon", durMs() < 86400000);
+    var mb = document.createElement("b");
+    mb.textContent = durLabel();
+    meta.appendChild(mb);
+    meta.appendChild(document.createTextNode(" · " + longDate(Date.now() + durMs())));
+    fitStub(el("pv-stub"));
     el("give").disabled = !txt || !state.me;
   }
 
@@ -1279,6 +1307,7 @@ if ("serviceWorker" in navigator) {
     document.body.style.overflow = "hidden";
     el("give").textContent = "Hand it to " + PEOPLE[other(state.me)].short;
     syncPreview();
+    fitStub(el("pv-stub"));   // the overlay has a size now, so measure again
     el("text").focus({ preventScroll: true });
   }
   function closeSend(){
@@ -1326,6 +1355,15 @@ if ("serviceWorker" in navigator) {
   }, 1000);
 
   // ---------- wiring ----------
+  if (document.fonts && document.fonts.ready){
+    document.fonts.ready.then(function(){ fitAllStubs(); })["catch"](function(){});
+  }
+  var fitTimer = null;
+  window.addEventListener("resize", function(){
+    clearTimeout(fitTimer);
+    fitTimer = setTimeout(function(){ fitAllStubs(); }, 150);
+  });
+
   buildIcons();
   buildSwatches();
   buildDurs();
