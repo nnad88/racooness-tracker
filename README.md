@@ -48,6 +48,21 @@ sheet inside the installed app.
 
 You can bring the pairing links back up any time from the button at the top right.
 
+## Lost the pairing on a device
+
+Clearing browser data wipes the pairing, not the coupons — those live in Supabase.
+The setup screen is just asking to be told where the pile is again.
+
+- **Easiest:** open the app on a device that still works and tap the pill at the
+  top right (*Stinky ⚙*). Both pairing links are there with a copy button. Paste
+  one into the yellow box on the device that lost it.
+- **No device left?** Fill in steps 1–4 of setup, then paste your **pair code**
+  into that same box instead of a link. Find it in Supabase under
+  *Table Editor → tickets → any row's* `pair` *column*. Same code, same pile,
+  nothing lost.
+- Do **not** run setup from scratch to recover — that mints a new pair code and
+  your old coupons stay behind under the old one.
+
 ## Worth knowing
 
 - **Claiming is a handshake.** Ripping a coupon does not spend it. It goes to the

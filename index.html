@@ -297,6 +297,9 @@ textarea#text:focus,input#note:focus{outline:3px solid var(--lemon);outline-offs
 .haslink p{font-size:13px;line-height:1.45;color:#D6C6FF;font-weight:500;margin:0 0 12px}
 .haslink input{margin-bottom:11px}
 .haslink .pick{margin-bottom:0}
+.findit{font-family:var(--mono);font-size:11px;line-height:1.6;color:#C3ADFF;margin:14px 0 0}
+.findit b{color:var(--lemon);font-weight:400}
+.findit em{font-style:normal;color:var(--cream)}
 .orline{display:flex;align-items:center;gap:12px;margin:20px 0 18px}
 .orline::before,.orline::after{content:"";flex:1;height:3px;background:var(--grape-d)}
 .orline span{font-family:var(--mono);font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;color:#A992E8}
@@ -355,11 +358,17 @@ textarea#text:focus,input#note:focus{outline:3px solid var(--lemon);outline-offs
     <h1 class="gatetitle"><span>Racoonness</span><span class="b">Tracker</span></h1>
     <div class="haslink">
       <h3>Already have a pairing link?</h3>
-      <p>Paste it here and this device is done. Use this if the icon on your phone keeps
-        opening to this screen.</p>
+      <p>Paste it here and this device is done. Use this whenever a device lands on this
+        screen — after clearing browser data, say.</p>
       <input id="su-paste" type="text" autocomplete="off" autocapitalize="off" spellcheck="false"
-             placeholder="Paste the link from the other device">
+             placeholder="Paste the link, or your pair code">
       <button class="pick p" id="su-pair" type="button">Pair this device</button>
+      <p class="findit"><b>Lost the link?</b> Open the app on a phone that still works and
+        tap the pill at the top right (<em>Stinky&nbsp;⚙</em>). Both links are in there with
+        a copy button.<br><br>
+        <b>No device left?</b> Nothing is lost — your coupons are still in Supabase. Fill in
+        steps 1&ndash;4 below, then come back and paste your <em>pair code</em> here instead:
+        Supabase → <em>Table Editor</em> → <em>tickets</em> → any row&rsquo;s <em>pair</em> column.</p>
     </div>
 
     <div class="orline"><span>or set it up from scratch</span></div>
@@ -1626,17 +1635,27 @@ if ("serviceWorker" in navigator) {
   el("su-pair").addEventListener("click", function(){
     setupError("");
     var raw = el("su-paste").value.trim();
-    var enc = null;
+    var enc = null, v = null;
     var m = raw.match(/[#?]p=([A-Za-z0-9_-]+)/);
     if (m) enc = m[1];
-    else if (/^[A-Za-z0-9_-]{40,}$/.test(raw)) enc = raw;   // just the code, pasted bare
-    if (!enc){
+    else if (/^[A-Za-z0-9_-]{40,}$/.test(raw)) enc = raw;   // just the link's code, pasted bare
+    if (enc){
+      try { v = b64d(enc); } catch(e){ v = null; }
+      if (!v || !v.u || !v.k || !v.p || !v.me){
+        return setupError("That link is incomplete. Copy it again from the other device, all of it.");
+      }
+    } else if (/^[A-Za-z0-9]{16,64}$/.test(raw)) {
+      // a pair code out of the database — rejoin the existing pile using the
+      // project details from the steps below
+      var u = el("su-url").value.trim().replace(/\/rest\/v1\/?$/i, "").replace(/\/+$/, "");
+      var k = el("su-key").value.trim();
+      var wb = document.querySelector('#su-who button[aria-pressed="true"]');
+      if (!u || !k){
+        return setupError("That looks like a pair code. Fill in the Project URL and key in step 3 below, then press this again.");
+      }
+      v = { u:u, k:k, p:raw, me: wb ? wb.getAttribute("data-who") : "stinky" };
+    } else {
       return setupError("That doesn't look like a pairing link. Copy the whole thing — it has a #p= in the middle.");
-    }
-    var v = null;
-    try { v = b64d(enc); } catch(e){ v = null; }
-    if (!v || !v.u || !v.k || !v.p || !v.me){
-      return setupError("That link is incomplete. Copy it again from the other device, all of it.");
     }
     var conf = { url:v.u, key:v.k, pair:v.p, me:v.me };
     saveCfg(conf);
