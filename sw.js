@@ -1,6 +1,11 @@
 // Cache the app shell so the home-screen icon opens instantly and works offline.
 // Supabase calls are never cached — they always go to the network.
-const CACHE = "racooness-v10";
+const CACHE = "racooness-v11";
+// caches.keys() lists every cache on the ORIGIN, not just this worker's scope, and
+// nnad88.github.io hosts other apps too. Sweeping "everything that isn't mine" would
+// delete theirs — and theirs would delete this one right back, which leaves a shell
+// missing exactly when Chrome checks whether an app still works offline.
+const MINE = "racooness-";
 const SHELL = [
   "./index.html",
   
@@ -23,7 +28,9 @@ self.addEventListener("install", (e) => {
 self.addEventListener("activate", (e) => {
   e.waitUntil(
     caches.keys()
-      .then((keys) => Promise.all(keys.filter((k) => k !== CACHE).map((k) => caches.delete(k))))
+      .then((keys) => Promise.all(
+        keys.filter((k) => k.startsWith(MINE) && k !== CACHE).map((k) => caches.delete(k))
+      ))
       .then(() => self.clients.claim())
   );
 });
