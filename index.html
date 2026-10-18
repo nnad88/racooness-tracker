@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
-<title>Racoonness Tracker</title>
+<title>Racoonness</title>
 <meta name="theme-color" content="#5A2DD6">
 <meta name="description" content="Hand each other coupons, and rip them off to cash them in.">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -289,22 +289,21 @@ textarea#text:focus,input#note:focus{outline:3px solid var(--lemon);outline-offs
 h1.brand{font-size:clamp(44px,14.6vw,74px)}
 .picks{display:grid;gap:14px;padding:26px 13px 0;max-width:480px;margin:0 auto;width:100%}
 .picks{gap:12px}
-.pickapp{display:block;text-align:left;background:none;border:3px solid currentColor;border-radius:4px;
-  padding:18px 18px 16px;position:relative;transition:transform .12s ease}
+.pickapp{display:block;text-align:left;background:none;border:3px solid currentColor;border-radius:22px;
+  padding:20px 22px;position:relative;transition:transform .12s ease}
 .pickapp:active{transform:translateX(5px)}
-.pickapp .pa-name{display:block;font-family:var(--fat);font-weight:400;font-size:clamp(32px,10vw,46px);
-  line-height:.9;letter-spacing:-.02em}
-.pickapp .pa-sub{display:block;font-family:var(--mono);font-size:11px;line-height:1.45;margin-top:10px;opacity:.72}
+.pickapp .pa-name{display:block;font-family:var(--fat);font-weight:400;font-size:clamp(38px,12.5vw,58px);
+  line-height:.9;letter-spacing:-.025em}
 .pickapp.tracker{color:var(--lemon)}
 .pickapp.cinema{color:#3FE0C6}
 .pickapp.gourmet{color:#6E58B8;border-style:dashed;cursor:default}
 .pickapp.gourmet:active{transform:none}
-.pa-flag{position:absolute;top:16px;right:16px;font-family:var(--mono);font-size:9px;letter-spacing:.18em;
+.pa-flag{position:absolute;top:18px;right:18px;font-family:var(--mono);font-size:9px;letter-spacing:.18em;
   text-transform:uppercase;border:2px solid currentColor;border-radius:4px;padding:4px 9px}
 
 /* ---------- cinema ---------- */
 #cinema h1 .c{display:block;color:#3FE0C6}
-.searchbar{display:flex;gap:9px;padding:22px 13px 0;align-items:center;max-width:480px;margin:0 auto;width:100%}
+.searchbar{display:flex;gap:9px;padding:36px 13px 0;align-items:center;max-width:480px;margin:0 auto;width:100%}
 .searchbar input{flex:1;min-width:0;background:var(--grape-d);color:var(--cream);border:3px solid var(--grape-dd);
   border-radius:99px;padding:14px 18px;font-family:var(--fat);font-weight:400;font-size:17px}
 .searchbar input::placeholder{color:#8F79D6}
@@ -322,12 +321,16 @@ h1.brand{font-size:clamp(44px,14.6vw,74px)}
 .film .poster span{font-family:var(--fat);font-size:11px;line-height:1.02;color:#05302A;padding:5px;
   word-break:break-word}
 .film .info{flex:1;min-width:0;display:flex;flex-direction:column}
-.film .ft{font-family:var(--fat);font-weight:400;font-size:17px;line-height:1.02;color:var(--cream);
-  word-break:break-word}
+.film .ft{font-family:var(--fat);font-weight:400;font-size:clamp(19px,5.8vw,24px);line-height:1;
+  color:var(--cream);word-break:break-word}
 .film .fy{font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:#9D86E8;
   margin-top:5px}
 .film .by{font-family:var(--mono);font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;
-  color:var(--grape-d);background:#3FE0C6;border-radius:99px;padding:3px 9px;width:max-content;margin-top:auto}
+  color:var(--grape-d);background:#3FE0C6;border-radius:99px;padding:4px 10px;width:max-content}
+.film .foot{display:flex;align-items:center;gap:9px;flex-wrap:wrap;margin-top:auto;padding-top:10px}
+.watchbtn{font-family:var(--fat);font-weight:400;font-size:14px;line-height:1;background:#2FC2AE;
+  color:#05302A;border-radius:99px;padding:9px 15px;box-shadow:0 3px 0 #1C8C7D}
+.watchbtn:active{transform:translateY(2px);box-shadow:0 1px 0 #1C8C7D}
 .film .acts{display:flex;flex-direction:column;gap:5px;justify-content:center;flex:none}
 .film .acts button{width:34px;height:30px;border-radius:9px;background:var(--grape-dd);color:#C3ADFF;
   font-family:var(--fat);font-size:14px;line-height:1;display:grid;place-items:center}
@@ -335,7 +338,7 @@ h1.brand{font-size:clamp(44px,14.6vw,74px)}
 .film .acts button[disabled]{opacity:.3}
 .film.gone{opacity:.62}
 .film.gone .poster{filter:grayscale(1)}
-.film.gone .ft{text-decoration:line-through;color:#A992E8;font-size:15px}
+.film.gone .ft{text-decoration:line-through;color:#A992E8;font-size:clamp(16px,4.6vw,19px)}
 .film.gone .by{background:#4A3B8C;color:#D6C6FF}
 
 /* ---------- search results ---------- */
@@ -433,7 +436,7 @@ h1.brand{font-size:clamp(44px,14.6vw,74px)}
 <body>
 <div class="setup" id="setup" hidden>
   <div class="setupbox">
-    <h1 class="gatetitle"><span>Racoonness</span><span class="b">Tracker</span></h1>
+    <h1 class="gatetitle"><span>Racoonness</span></h1>
     <div class="haslink">
       <h3>Already have a pairing link?</h3>
       <p>Paste it here and this device is done. Use this whenever a device lands on this
@@ -537,17 +540,14 @@ create policy "pair only" on public.tickets
   </div>
   <div class="picks">
     <button class="pickapp tracker" id="go-tracker" type="button">
-      <span class="pa-name">Tracker</span>
-      <span class="pa-sub" id="pa-tracker">coupons you hand each other</span>
+      <span class="pa-name">Coupons</span>
     </button>
     <button class="pickapp cinema" id="go-cinema" type="button">
       <span class="pa-name">Cinema</span>
-      <span class="pa-sub" id="pa-cinema">the list of films you keep meaning to watch</span>
     </button>
     <div class="pickapp gourmet" aria-disabled="true">
       <span class="pa-flag">Soon</span>
       <span class="pa-name">Gourmet</span>
-      <span class="pa-sub">not built yet</span>
     </div>
   </div>
 </div>
@@ -592,7 +592,7 @@ create policy "pair only" on public.tickets
 <div id="app" hidden>
   <div class="top">
     <div class="toprow"><button class="who" id="who" type="button">you are —</button></div>
-    <h1><span>Racoonness</span><span class="b">Tracker</span></h1>
+    <h1><span>Racoonness</span><span class="b">Coupons</span></h1>
   </div>
 
   <div class="bar">
@@ -1645,9 +1645,7 @@ if ("serviceWorker" in navigator) {
     var mine = state.tickets.filter(function(t){
       return t.to === state.me && statusOf(t, now) === "live";
     }).length;
-    el("pa-tracker").textContent = mine
-      ? mine + (mine === 1 ? " coupon waiting for you" : " coupons waiting for you")
-      : "coupons you hand each other";
+    void mine;
   }
 
   // ---------- cinema ----------
@@ -1823,9 +1821,6 @@ if ("serviceWorker" in navigator) {
     el("cin-count").textContent = unseen.length + (unseen.length === 1 ? " film" : " films");
     el("cin-seencount").textContent = seen.length + " watched";
     el("cin-seenwrap").hidden = !seen.length;
-    el("pa-cinema").textContent = unseen.length
-      ? unseen.length + (unseen.length === 1 ? " film waiting" : " films waiting")
-      : "the list of films you keep meaning to watch";
 
     var box = el("cin-list");
     box.innerHTML = "";
@@ -1862,9 +1857,19 @@ if ("serviceWorker" in navigator) {
       y.className = "fy"; y.textContent = f.year;
       info.appendChild(y);
     }
+    var foot = document.createElement("div");
+    foot.className = "foot";
     var by = document.createElement("div");
     by.className = "by"; by.textContent = PEOPLE[f.by] ? PEOPLE[f.by].short : f.by;
-    info.appendChild(by);
+    foot.appendChild(by);
+    if (!o.watched){
+      var w = document.createElement("button");
+      w.type = "button"; w.className = "watchbtn"; w.textContent = "Watched";
+      w.setAttribute("aria-label", "Mark watched: " + f.title);
+      w.addEventListener("click", function(){ filmStore.patch(f.id, { watched:true }); });
+      foot.appendChild(w);
+    }
+    info.appendChild(foot);
     n.appendChild(info);
 
     var acts = document.createElement("div");
@@ -1892,11 +1897,7 @@ if ("serviceWorker" in navigator) {
       dn.type = "button"; dn.textContent = "▼"; dn.disabled = !!o.last;
       dn.setAttribute("aria-label", "Move down: " + f.title);
       dn.addEventListener("click", function(){ swapFilm(o.list, f, 1); });
-      var ok = document.createElement("button");
-      ok.type = "button"; ok.className = "seen"; ok.textContent = "✓";
-      ok.setAttribute("aria-label", "Mark watched: " + f.title);
-      ok.addEventListener("click", function(){ filmStore.patch(f.id, { watched:true }); });
-      acts.appendChild(up); acts.appendChild(dn); acts.appendChild(ok);
+      acts.appendChild(up); acts.appendChild(dn);
     }
     n.appendChild(acts);
     return n;

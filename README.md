@@ -52,7 +52,7 @@ You can bring the pairing links back up any time from the button at the top righ
 
 Opening Racoonness lands on a menu:
 
-- **Tracker** — the coupons you hand each other. Unchanged.
+- **Coupons** — the coupons you hand each other.
 - **Cinema** — a shared film list. Type a title, pick from the posters, and it joins
   the queue with whoever added it named on it. Reorder with the arrows, tick one off
   to move it to Watched, put it back or delete it from there.

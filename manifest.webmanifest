@@ -1,7 +1,7 @@
 {
-  "name": "Racooness Tracker",
-  "short_name": "Racooness",
-  "description": "Hand each other tickets, and tear them off to cash them in.",
+  "name": "Racoonness",
+  "short_name": "Racoonness",
+  "description": "Coupons, films and whatever comes next, for two.",
   "scope": "./",
   "display": "standalone",
   "orientation": "portrait",
