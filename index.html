@@ -289,11 +289,18 @@ textarea#text:focus,input#note:focus{outline:3px solid var(--lemon);outline-offs
 h1.brand{font-size:clamp(44px,14.6vw,74px)}
 .picks{display:grid;gap:14px;padding:26px 13px 0;max-width:480px;margin:0 auto;width:100%}
 .picks{gap:12px}
-.pickapp{display:block;text-align:left;background:none;border:3px solid currentColor;border-radius:22px;
-  padding:20px 22px;position:relative;transition:transform .12s ease}
+.pickapp{display:flex;align-items:center;gap:16px;text-align:left;background:none;
+  border:3px solid currentColor;border-radius:22px;padding:18px 22px 24px;position:relative;
+  transition:transform .12s ease;width:100%}
+.pa-ico{width:clamp(44px,13vw,58px);height:auto;aspect-ratio:1;flex:none;display:block;
+  filter:drop-shadow(3px 3px 0 var(--hot))}
+.pa-ico path{fill:none;stroke:currentColor;stroke-width:6.5;stroke-linecap:round;stroke-linejoin:round}
+.pickapp.gourmet .pa-ico{filter:drop-shadow(3px 3px 0 var(--grape-dd))}
 .pickapp:active{transform:translateX(5px)}
-.pickapp .pa-name{display:block;font-family:var(--fat);font-weight:400;font-size:clamp(38px,12.5vw,58px);
-  line-height:.9;letter-spacing:-.025em}
+.pickapp .pa-name{display:block;flex:1;min-width:0;font-family:var(--fat);font-weight:400;font-size:clamp(38px,12.5vw,58px);
+  line-height:.9;letter-spacing:-.025em;
+  text-shadow:4px 4px 0 var(--hot),8px 8px 0 var(--grape-dd)}
+.pickapp.gourmet .pa-name{text-shadow:4px 4px 0 var(--grape-dd)}
 .pickapp.tracker{color:var(--lemon)}
 .pickapp.cinema{color:#3FE0C6}
 .pickapp.gourmet{color:#6E58B8;border-style:dashed;cursor:default}
@@ -326,10 +333,11 @@ h1.brand{font-size:clamp(44px,14.6vw,74px)}
 .film .fy{font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:#9D86E8;
   margin-top:5px}
 .film .by{font-family:var(--mono);font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;
-  color:var(--grape-d);background:#3FE0C6;border-radius:99px;padding:4px 10px;width:max-content}
-.film .foot{display:flex;align-items:center;gap:9px;flex-wrap:wrap;margin-top:auto;padding-top:10px}
-.watchbtn{font-family:var(--fat);font-weight:400;font-size:14px;line-height:1;background:#2FC2AE;
-  color:#05302A;border-radius:99px;padding:9px 15px;box-shadow:0 3px 0 #1C8C7D}
+  color:var(--cream);background:var(--grape);border-radius:99px;padding:4px 10px;width:max-content}
+.film .by.pinky{background:var(--hot)}
+.film .foot{display:flex;align-items:center;gap:9px;margin-top:auto;padding-top:10px}
+.watchbtn{margin-left:auto;flex:none;font-family:var(--fat);font-weight:400;font-size:14px;line-height:1;
+  background:#2FC2AE;color:#05302A;border-radius:99px;padding:9px 15px;box-shadow:0 3px 0 #1C8C7D}
 .watchbtn:active{transform:translateY(2px);box-shadow:0 1px 0 #1C8C7D}
 .film .acts{display:flex;flex-direction:column;gap:5px;justify-content:center;flex:none}
 .film .acts button{width:34px;height:30px;border-radius:9px;background:var(--grape-dd);color:#C3ADFF;
@@ -340,6 +348,7 @@ h1.brand{font-size:clamp(44px,14.6vw,74px)}
 .film.gone .poster{filter:grayscale(1)}
 .film.gone .ft{text-decoration:line-through;color:#A992E8;font-size:clamp(16px,4.6vw,19px)}
 .film.gone .by{background:#4A3B8C;color:#D6C6FF}
+.film.gone .by.pinky{background:#8C3B6B;color:#FFD6EC}
 
 /* ---------- search results ---------- */
 .results{position:fixed;inset:0;z-index:900;background:var(--grape);overflow-y:auto;
@@ -540,13 +549,16 @@ create policy "pair only" on public.tickets
   </div>
   <div class="picks">
     <button class="pickapp tracker" id="go-tracker" type="button">
+      <svg class="pa-ico" viewBox="0 0 100 100" aria-hidden="true"><path d="M10 28h80v44H10z"/><path d="M66 32v6M66 44v6M66 56v6M66 66v2"/></svg>
       <span class="pa-name">Coupons</span>
     </button>
     <button class="pickapp cinema" id="go-cinema" type="button">
+      <svg class="pa-ico" viewBox="0 0 100 100" aria-hidden="true"><path d="M10 44h80v38H10z"/><path d="M10 26h80v18H10z"/><path d="M28 26l-9 18M50 26l-9 18M72 26l-9 18"/></svg>
       <span class="pa-name">Cinema</span>
     </button>
     <div class="pickapp gourmet" aria-disabled="true">
       <span class="pa-flag">Soon</span>
+      <svg class="pa-ico" viewBox="0 0 100 100" aria-hidden="true"><path d="M16 68a34 34 0 0 1 68 0"/><path d="M8 68h84"/><path d="M50 26v8"/><path d="M50 22v0"/></svg>
       <span class="pa-name">Gourmet</span>
     </div>
   </div>
@@ -1860,7 +1872,8 @@ if ("serviceWorker" in navigator) {
     var foot = document.createElement("div");
     foot.className = "foot";
     var by = document.createElement("div");
-    by.className = "by"; by.textContent = PEOPLE[f.by] ? PEOPLE[f.by].short : f.by;
+    by.className = "by" + (f.by === "pinky" ? " pinky" : "");
+    by.textContent = PEOPLE[f.by] ? PEOPLE[f.by].short : f.by;
     foot.appendChild(by);
     if (!o.watched){
       var w = document.createElement("button");
