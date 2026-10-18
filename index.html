@@ -54,7 +54,9 @@ input,textarea{font:inherit}
 
 /* ---------- title ---------- */
 .top{padding:16px 13px 0}
-.toprow{display:flex;justify-content:flex-end;margin-bottom:6px}
+.toprow{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:6px}
+.toprow>*:only-child{margin-left:auto}
+.who.back{color:var(--cream)}
 .who{font-family:var(--mono);font-size:9.5px;letter-spacing:.08em;background:var(--grape-d);color:var(--lemon);
   border-radius:99px;padding:6px 11px;text-transform:uppercase;white-space:nowrap;border:2px solid var(--grape-dd)}
 .who:hover{background:var(--hot);color:var(--cream)}
@@ -281,6 +283,82 @@ textarea#text:focus,input#note:focus{outline:3px solid var(--lemon);outline-offs
 @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
 *:focus-visible{outline:3px solid var(--lemon);outline-offset:3px}
 
+/* ---------- home ---------- */
+#home,#cinema{min-height:100%;display:flex;flex-direction:column}
+#home .top,#cinema .top{padding:16px 13px 0;max-width:480px;margin:0 auto;width:100%}
+h1.brand{font-size:clamp(44px,14.6vw,74px)}
+.picks{display:grid;gap:14px;padding:26px 13px 0;max-width:480px;margin:0 auto;width:100%}
+.picks{gap:12px}
+.pickapp{display:block;text-align:left;background:none;border:3px solid currentColor;border-radius:4px;
+  padding:18px 18px 16px;position:relative;transition:transform .12s ease}
+.pickapp:active{transform:translateX(5px)}
+.pickapp .pa-name{display:block;font-family:var(--fat);font-weight:400;font-size:clamp(32px,10vw,46px);
+  line-height:.9;letter-spacing:-.02em}
+.pickapp .pa-sub{display:block;font-family:var(--mono);font-size:11px;line-height:1.45;margin-top:10px;opacity:.72}
+.pickapp.tracker{color:var(--lemon)}
+.pickapp.cinema{color:#3FE0C6}
+.pickapp.gourmet{color:#6E58B8;border-style:dashed;cursor:default}
+.pickapp.gourmet:active{transform:none}
+.pa-flag{position:absolute;top:16px;right:16px;font-family:var(--mono);font-size:9px;letter-spacing:.18em;
+  text-transform:uppercase;border:2px solid currentColor;border-radius:4px;padding:4px 9px}
+
+/* ---------- cinema ---------- */
+#cinema h1 .c{display:block;color:#3FE0C6}
+.searchbar{display:flex;gap:9px;padding:22px 13px 0;align-items:center;max-width:480px;margin:0 auto;width:100%}
+.searchbar input{flex:1;min-width:0;background:var(--grape-d);color:var(--cream);border:3px solid var(--grape-dd);
+  border-radius:99px;padding:14px 18px;font-family:var(--fat);font-weight:400;font-size:17px}
+.searchbar input::placeholder{color:#8F79D6}
+.searchbar input:focus{outline:3px solid #3FE0C6;outline-offset:2px}
+.searchbar .add{background:#2FC2AE;color:#05302A;box-shadow:0 5px 0 #1C8C7D}
+.searchbar .add:active{transform:translateY(3px);box-shadow:0 2px 0 #1C8C7D}
+#cinema main,#home main{max-width:480px;margin:0 auto;width:100%}
+#cin-banner{max-width:480px;margin:0 auto;width:100%}
+
+.film{display:flex;gap:12px;align-items:stretch;background:var(--grape-d);border-radius:14px;padding:10px;
+  margin-bottom:10px;position:relative}
+.film .poster{width:62px;flex:none;aspect-ratio:2/3;border-radius:7px;overflow:hidden;background:#1C8C7D;
+  display:grid;place-items:center;text-align:center}
+.film .poster img{width:100%;height:100%;object-fit:cover;display:block}
+.film .poster span{font-family:var(--fat);font-size:11px;line-height:1.02;color:#05302A;padding:5px;
+  word-break:break-word}
+.film .info{flex:1;min-width:0;display:flex;flex-direction:column}
+.film .ft{font-family:var(--fat);font-weight:400;font-size:17px;line-height:1.02;color:var(--cream);
+  word-break:break-word}
+.film .fy{font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:#9D86E8;
+  margin-top:5px}
+.film .by{font-family:var(--mono);font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--grape-d);background:#3FE0C6;border-radius:99px;padding:3px 9px;width:max-content;margin-top:auto}
+.film .acts{display:flex;flex-direction:column;gap:5px;justify-content:center;flex:none}
+.film .acts button{width:34px;height:30px;border-radius:9px;background:var(--grape-dd);color:#C3ADFF;
+  font-family:var(--fat);font-size:14px;line-height:1;display:grid;place-items:center}
+.film .acts button.seen{background:#2FC2AE;color:#05302A}
+.film .acts button[disabled]{opacity:.3}
+.film.gone{opacity:.62}
+.film.gone .poster{filter:grayscale(1)}
+.film.gone .ft{text-decoration:line-through;color:#A992E8;font-size:15px}
+.film.gone .by{background:#4A3B8C;color:#D6C6FF}
+
+/* ---------- search results ---------- */
+.results{position:fixed;inset:0;z-index:900;background:var(--grape);overflow-y:auto;
+  padding:calc(16px + env(safe-area-inset-top,0px)) 14px calc(28px + env(safe-area-inset-bottom,0px))}
+.results[hidden]{display:none}
+.res-inner{max-width:480px;margin:0 auto}
+.res-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:16px}
+.res-head h2{font-family:var(--fat);font-weight:400;font-size:clamp(24px,7.4vw,34px);line-height:1;margin:0;
+  color:var(--cream);text-shadow:3px 3px 0 #2FC2AE}
+.hit{display:flex;gap:12px;width:100%;text-align:left;background:var(--grape-d);border-radius:14px;
+  padding:10px;margin-bottom:10px}
+.hit:active{transform:translateY(2px)}
+.hit .poster{width:58px;flex:none;aspect-ratio:2/3;border-radius:7px;overflow:hidden;background:#1C8C7D;
+  display:grid;place-items:center;text-align:center}
+.hit .poster img{width:100%;height:100%;object-fit:cover;display:block}
+.hit .poster span{font-family:var(--fat);font-size:10px;line-height:1.02;color:#05302A;padding:4px;word-break:break-word}
+.hit .info{flex:1;min-width:0}
+.hit .ft{font-family:var(--fat);font-size:17px;line-height:1.02;color:var(--cream);word-break:break-word}
+.hit .fd{font-family:var(--mono);font-size:10.5px;line-height:1.45;color:#B49BF5;margin-top:6px}
+.res-note{font-family:var(--mono);font-size:11px;line-height:1.6;color:#B49BF5;margin:4px 0 18px}
+.res-note a{color:#3FE0C6}
+
 /* ---------- setup ---------- */
 .setup{position:fixed;inset:0;z-index:1000;background:var(--grape);overflow-y:auto;
   padding:calc(20px + env(safe-area-inset-top,0px)) 16px calc(40px + env(safe-area-inset-bottom,0px))}
@@ -449,6 +527,65 @@ create policy "pair only" on public.tickets
 
     <button class="give" id="su-go" type="button">Start</button>
     <p class="gateerr" id="setup-err" hidden></p>
+  </div>
+</div>
+
+<div id="home" hidden>
+  <div class="top">
+    <div class="toprow"><button class="who" id="home-who" type="button">⚙</button></div>
+    <h1 class="brand"><span>Racoonness</span></h1>
+  </div>
+  <div class="picks">
+    <button class="pickapp tracker" id="go-tracker" type="button">
+      <span class="pa-name">Tracker</span>
+      <span class="pa-sub" id="pa-tracker">coupons you hand each other</span>
+    </button>
+    <button class="pickapp cinema" id="go-cinema" type="button">
+      <span class="pa-name">Cinema</span>
+      <span class="pa-sub" id="pa-cinema">the list of films you keep meaning to watch</span>
+    </button>
+    <div class="pickapp gourmet" aria-disabled="true">
+      <span class="pa-flag">Soon</span>
+      <span class="pa-name">Gourmet</span>
+      <span class="pa-sub">not built yet</span>
+    </div>
+  </div>
+</div>
+
+<div id="cinema" hidden>
+  <div class="top">
+    <div class="toprow">
+      <button class="who back" id="cin-back" type="button">◀ Racoonness</button>
+      <button class="who" id="cin-who" type="button">⚙</button>
+    </div>
+    <h1><span>Racoonness</span><span class="c">Cinema</span></h1>
+  </div>
+
+  <div class="searchbar">
+    <input id="cin-q" type="search" autocomplete="off" autocapitalize="words" spellcheck="false"
+           placeholder="Add a film…" aria-label="Search for a film">
+    <button class="add" id="cin-add" type="button" aria-label="Search">+</button>
+  </div>
+  <div id="cin-banner"></div>
+
+  <main>
+    <div class="shead"><b>Up next</b><i></i><span id="cin-count"></span></div>
+    <div id="cin-list"></div>
+    <div id="cin-seenwrap" hidden>
+      <div class="shead"><b>Watched</b><i></i><span id="cin-seencount"></span>
+        <button class="clearbtn" id="cin-clear" type="button">Clear</button></div>
+      <div id="cin-seen"></div>
+    </div>
+  </main>
+</div>
+
+<div class="results" id="results" hidden role="dialog" aria-modal="true" aria-label="Pick the film">
+  <div class="res-inner">
+    <div class="res-head">
+      <h2 id="res-title">Which one?</h2>
+      <button class="x" id="res-close" type="button" aria-label="Close">✕</button>
+    </div>
+    <div id="res-list"></div>
   </div>
 </div>
 
@@ -956,7 +1093,7 @@ if ("serviceWorker" in navigator) {
   }
   function pairLink(cfg, who){
     return location.origin + location.pathname +
-      "#p=" + b64e({ u:cfg.url, k:cfg.key, p:cfg.pair, me:who });
+      "#p=" + b64e({ u:cfg.url, k:cfg.key, p:cfg.pair, me:who, t:cfg.tmdb || "" });
   }
 
   // ---------- ticket node ----------
@@ -1448,8 +1585,388 @@ if ("serviceWorker" in navigator) {
       toast("Couldn't clear those \u2014 try again");
     });
   });
+  el("go-tracker").addEventListener("click", function(){ go("tracker"); });
+  el("go-cinema").addEventListener("click", function(){ go("cinema"); });
+  el("cin-back").addEventListener("click", function(){ go("home"); });
+  el("home-who").addEventListener("click", openSettings);
+  el("cin-who").addEventListener("click", openSettings);
+  el("res-close").addEventListener("click", function(){ el("results").hidden = true; });
+  el("cin-add").addEventListener("click", function(){
+    var q = el("cin-q").value.trim();
+    if (q) openResults(q);
+  });
+  el("cin-q").addEventListener("keydown", function(e){
+    if (e.key === "Enter"){ e.preventDefault(); var q = el("cin-q").value.trim(); if (q) openResults(q); }
+  });
+  var cinClearTimer = null;
+  el("cin-clear").addEventListener("click", function(){
+    var b = el("cin-clear");
+    if (!b.classList.contains("arm")){
+      b.classList.add("arm"); b.textContent = "Delete all?";
+      clearTimeout(cinClearTimer);
+      cinClearTimer = setTimeout(function(){ b.classList.remove("arm"); b.textContent = "Clear"; }, 3500);
+      return;
+    }
+    clearTimeout(cinClearTimer);
+    b.disabled = true;
+    films.filter(function(f){ return f.watched; }).reduce(function(c, f){
+      return c.then(function(){ return filmStore.remove(f.id); });
+    }, Promise.resolve()).then(function(){
+      b.disabled = false; b.classList.remove("arm"); b.textContent = "Clear";
+    })["catch"](function(){
+      b.disabled = false; b.classList.remove("arm"); b.textContent = "Clear";
+      toast("Couldn't clear those");
+    });
+  });
+  // the tracker's own back-to-home button
+  var homeBtn = document.createElement("button");
+  homeBtn.className = "who back"; homeBtn.type = "button"; homeBtn.textContent = "\u25C0 Racoonness";
+  homeBtn.addEventListener("click", function(){ go("home"); });
+  el("app").querySelector(".toprow").insertBefore(homeBtn, el("who"));
+
   el("seg-yours").addEventListener("click", function(){ state.seg = "yours"; renderAll(); });
   el("seg-given").addEventListener("click", function(){ state.seg = "given"; renderAll(); });
+
+  // ---------- which app is on screen ----------
+  var view = "home", demoWho = null;
+  function go(v){
+    view = v;
+    el("home").hidden   = v !== "home";
+    el("app").hidden    = v !== "tracker";
+    el("cinema").hidden = v !== "cinema";
+    try { localStorage.setItem("racooness.view", v); } catch(e){}
+    window.scrollTo(0, 0);
+    if (v === "cinema"){ renderCinema(); if (filmStore) filmStore.reload()["catch"](function(){}); }
+    if (v === "tracker") renderAll();
+    if (v === "home") renderHome();
+  }
+  function renderHome(){
+    var now = Date.now();
+    var mine = state.tickets.filter(function(t){
+      return t.to === state.me && statusOf(t, now) === "live";
+    }).length;
+    el("pa-tracker").textContent = mine
+      ? mine + (mine === 1 ? " coupon waiting for you" : " coupons waiting for you")
+      : "coupons you hand each other";
+  }
+
+  // ---------- cinema ----------
+  var films = [], filmStore = null, cinReady = false;
+
+  var filmFromRow = function(r){
+    return { id:r.id, title:r.title, year:r.year || "", poster:r.poster || "", blurb:r.blurb || "",
+             by:r.added_by, watched:!!r.watched, pos:r.pos || 0 };
+  };
+  var filmToRow = function(f, pair){
+    return { id:f.id, pair:pair, title:f.title, year:f.year, poster:f.poster, blurb:f.blurb,
+             added_by:f.by, watched:f.watched, pos:f.pos };
+  };
+
+  function filmStoreFor(client, pair){
+    var cb = null;
+    function reload(){
+      return client.from("movies").select("*").then(function(res){
+        if (res.error) throw res.error;
+        cinReady = true;
+        var l = (res.data || []).map(filmFromRow);
+        try { localStorage.setItem("racooness.films.v1", JSON.stringify(l)); } catch(e){}
+        if (cb) cb(l);
+      })["catch"](function(err){
+        // the table is only missing until the SQL is run; say so instead of failing silently
+        if (err && /movies|relation|schema cache/i.test(err.message || "")) cinReady = false;
+        if (cb) cb(films);
+        throw err;
+      });
+    }
+    return {
+      watch:function(fn){
+        cb = fn;
+        try { var c = JSON.parse(localStorage.getItem("racooness.films.v1") || "[]"); if (Array.isArray(c)) fn(c); }
+        catch(e){}
+        reload()["catch"](function(){});
+        setInterval(function(){ if (!document.hidden && view === "cinema") reload()["catch"](function(){}); }, 6000);
+        return reload;
+      },
+      add:function(f){ return client.from("movies").insert(filmToRow(f, pair)).then(function(r){ if (r.error) throw r.error; return reload(); }); },
+      patch:function(id, fields){ return client.from("movies").update(fields).eq("id", id).then(function(r){ if (r.error) throw r.error; return reload(); }); },
+      remove:function(id){ return client.from("movies")["delete"]().eq("id", id).then(function(r){ if (r.error) throw r.error; return reload(); }); },
+      reload: reload
+    };
+  }
+
+  function demoFilmStore(){
+    var KEY = "racooness.demofilms.v1", list = [];
+    try { list = JSON.parse(localStorage.getItem(KEY) || "[]") || []; } catch(e){}
+    if (!Array.isArray(list)) list = [];
+    cinReady = true;
+    var cb = null;
+    function save(){ try { localStorage.setItem(KEY, JSON.stringify(list)); } catch(e){} if (cb) cb(list.slice()); }
+    return {
+      watch:function(fn){ cb = fn; fn(list.slice()); return function(){}; },
+      add:function(f){ list.push(f); save(); return Promise.resolve(); },
+      patch:function(id, fields){
+        list = list.map(function(f){
+          if (f.id !== id) return f;
+          var n = Object.assign({}, f);
+          if ("watched" in fields) n.watched = fields.watched;
+          if ("pos" in fields) n.pos = fields.pos;
+          return n;
+        });
+        save(); return Promise.resolve();
+      },
+      remove:function(id){ list = list.filter(function(f){ return f.id !== id; }); save(); return Promise.resolve(); },
+      reload:function(){ return Promise.resolve(); }
+    };
+  }
+
+  // Posters come from Cinemeta, which is open, keyless and CORS-enabled.
+  // Wikipedia is the stand-in if that host cannot be reached: it finds films
+  // reliably but holds no poster art, since film posters are non-free.
+  function wikiSearch(q){
+    var u = "https://en.wikipedia.org/w/api.php?action=query&format=json&origin=*" +
+            "&generator=search&gsrsearch=" + encodeURIComponent(q + " film") +
+            "&gsrlimit=8&prop=description";
+    return fetch(u).then(function(r){ return r.json(); }).then(function(j){
+      var pages = Object.keys(((j.query || {}).pages) || {}).map(function(k){ return j.query.pages[k]; });
+      pages.sort(function(a, b){ return (a.index || 0) - (b.index || 0); });
+      return pages.filter(function(p){
+        return /film|movie|miniseries|series/i.test(p.description || "");
+      }).slice(0, 8).map(function(p){
+        var d = p.description || "";
+        var ym = d.match(/(19|20)\d{2}/);
+        return { title:p.title.replace(/\s*\((\d{4}\s*)?film\)$/i, ""),
+                 year:ym ? ym[0] : "", poster:"", blurb:d };
+      });
+    });
+  }
+
+  function searchFilms(q){
+    var u = "https://v3-cinemeta.strem.io/catalog/movie/top/search=" + encodeURIComponent(q) + ".json";
+    return fetch(u).then(function(r){
+      if (!r.ok) throw new Error("catalog " + r.status);
+      return r.json();
+    }).then(function(j){
+      var metas = j.metas || [];
+      if (!metas.length) return wikiSearch(q);
+      return metas.slice(0, 12).map(function(m){
+        var id = m.imdb_id || m.id || "";
+        return {
+          title: m.name,
+          year: String(m.releaseInfo || "").slice(0, 4),
+          poster: m.poster || (/^tt\d+$/.test(id)
+            ? "https://images.metahub.space/poster/medium/" + id + "/img" : ""),
+          blurb: String(m.description || "").slice(0, 180)
+        };
+      });
+    })["catch"](function(){ return wikiSearch(q); });
+  }
+
+  function cinBanner(){
+    var box = el("cin-banner");
+    if (!cinReady && !demoWho){
+      box.innerHTML = '<div class="banner"><b>One more table to make.</b> Cinema needs its own table in ' +
+        'Supabase. Open <em>SQL Editor</em>, run the block below, then pull down to refresh.' +
+        '<pre class="sql" id="cin-sql">' + MOVIE_SQL + '</pre>' +
+        '<button class="mini" id="cin-sql-copy" type="button">Copy the SQL</button></div>';
+      var c = el("cin-sql-copy");
+      if (c) c.addEventListener("click", function(){
+        if (navigator.clipboard) navigator.clipboard.writeText(MOVIE_SQL)
+          .then(function(){ toast("SQL copied"); })["catch"](function(){ toast("Select the box and copy"); });
+      });
+      return;
+    }
+    box.innerHTML = "";
+  }
+
+  var MOVIE_SQL = "create table if not exists public.movies (\n" +
+    "  id         text primary key,\n" +
+    "  pair       text not null,\n" +
+    "  title      text not null,\n" +
+    "  year       text,\n" +
+    "  poster     text,\n" +
+    "  blurb      text,\n" +
+    "  added_by   text not null,\n" +
+    "  watched    boolean not null default false,\n" +
+    "  pos        integer not null default 0,\n" +
+    "  created_at timestamptz not null default now()\n" +
+    ");\n\n" +
+    "alter table public.movies enable row level security;\n\n" +
+    "drop policy if exists \"pair only\" on public.movies;\n" +
+    "create policy \"pair only\" on public.movies\n" +
+    "  for all to anon\n" +
+    "  using      (pair = current_setting('request.headers', true)::json ->> 'x-pair')\n" +
+    "  with check (pair = current_setting('request.headers', true)::json ->> 'x-pair');";
+
+  function posterNode(f){
+    var p = document.createElement("div");
+    p.className = "poster";
+    if (f.poster){
+      var img = document.createElement("img");
+      img.src = f.poster; img.alt = ""; img.loading = "lazy";
+      img.addEventListener("error", function(){
+        p.innerHTML = ""; var sp = document.createElement("span"); sp.textContent = f.title; p.appendChild(sp);
+      });
+      p.appendChild(img);
+    } else {
+      var sp = document.createElement("span");
+      sp.textContent = f.title;
+      p.appendChild(sp);
+    }
+    return p;
+  }
+
+  function renderCinema(){
+    if (!state.me) return;
+    var unseen = films.filter(function(f){ return !f.watched; }).sort(function(a, b){ return a.pos - b.pos; });
+    var seen = films.filter(function(f){ return f.watched; }).sort(function(a, b){ return b.pos - a.pos; });
+
+    el("cin-count").textContent = unseen.length + (unseen.length === 1 ? " film" : " films");
+    el("cin-seencount").textContent = seen.length + " watched";
+    el("cin-seenwrap").hidden = !seen.length;
+    el("pa-cinema").textContent = unseen.length
+      ? unseen.length + (unseen.length === 1 ? " film waiting" : " films waiting")
+      : "the list of films you keep meaning to watch";
+
+    var box = el("cin-list");
+    box.innerHTML = "";
+    if (!unseen.length){
+      var e = document.createElement("div");
+      e.className = "empty";
+      e.innerHTML = "<b>Nothing lined up</b><span>Type a film up there and hit the plus. " +
+        "Whoever adds it gets their name on it.</span>";
+      box.appendChild(e);
+    }
+    unseen.forEach(function(f, i){
+      box.appendChild(filmNode(f, { first:i === 0, last:i === unseen.length - 1, list:unseen }));
+    });
+
+    var sbox = el("cin-seen");
+    sbox.innerHTML = "";
+    seen.forEach(function(f){ sbox.appendChild(filmNode(f, { watched:true })); });
+    cinBanner();
+  }
+
+  function filmNode(f, o){
+    var n = document.createElement("div");
+    n.className = "film" + (o.watched ? " gone" : "");
+
+    n.appendChild(posterNode(f));
+
+    var info = document.createElement("div");
+    info.className = "info";
+    var t = document.createElement("div");
+    t.className = "ft"; t.textContent = f.title;
+    info.appendChild(t);
+    if (f.year){
+      var y = document.createElement("div");
+      y.className = "fy"; y.textContent = f.year;
+      info.appendChild(y);
+    }
+    var by = document.createElement("div");
+    by.className = "by"; by.textContent = PEOPLE[f.by] ? PEOPLE[f.by].short : f.by;
+    info.appendChild(by);
+    n.appendChild(info);
+
+    var acts = document.createElement("div");
+    acts.className = "acts";
+    if (o.watched){
+      var back = document.createElement("button");
+      back.type = "button"; back.textContent = "↩";
+      back.setAttribute("aria-label", "Put back on the list: " + f.title);
+      back.addEventListener("click", function(){ filmStore.patch(f.id, { watched:false }); });
+      var del = document.createElement("button");
+      del.type = "button"; del.textContent = "✕";
+      del.setAttribute("aria-label", "Remove: " + f.title);
+      del.addEventListener("click", function(){
+        if (!del.dataset.arm){ del.dataset.arm = "1"; del.textContent = "?"; setTimeout(function(){
+          del.dataset.arm = ""; del.textContent = "✕"; }, 3000); return; }
+        filmStore.remove(f.id);
+      });
+      acts.appendChild(back); acts.appendChild(del);
+    } else {
+      var up = document.createElement("button");
+      up.type = "button"; up.textContent = "▲"; up.disabled = !!o.first;
+      up.setAttribute("aria-label", "Move up: " + f.title);
+      up.addEventListener("click", function(){ swapFilm(o.list, f, -1); });
+      var dn = document.createElement("button");
+      dn.type = "button"; dn.textContent = "▼"; dn.disabled = !!o.last;
+      dn.setAttribute("aria-label", "Move down: " + f.title);
+      dn.addEventListener("click", function(){ swapFilm(o.list, f, 1); });
+      var ok = document.createElement("button");
+      ok.type = "button"; ok.className = "seen"; ok.textContent = "✓";
+      ok.setAttribute("aria-label", "Mark watched: " + f.title);
+      ok.addEventListener("click", function(){ filmStore.patch(f.id, { watched:true }); });
+      acts.appendChild(up); acts.appendChild(dn); acts.appendChild(ok);
+    }
+    n.appendChild(acts);
+    return n;
+  }
+
+  function swapFilm(list, f, dir){
+    var i = list.indexOf(f), j = i + dir;
+    if (j < 0 || j >= list.length) return;
+    var other = list[j];
+    var a = f.pos, b = other.pos;
+    if (a === b) { a = i; b = j; }
+    filmStore.patch(f.id, { pos:b }).then(function(){ return filmStore.patch(other.id, { pos:a }); });
+  }
+
+  function openResults(q){
+    el("res-title").textContent = "Searching\u2026";
+    el("res-list").innerHTML = "";
+    el("results").hidden = false;
+    searchFilms(q).then(function(hits){
+      el("res-title").textContent = hits.length ? "Which one?" : "Nothing found";
+      var box = el("res-list");
+      box.innerHTML = "";
+      if (!hits.length){
+        var e = document.createElement("div");
+        e.className = "empty";
+        e.innerHTML = "<b>No match</b><span>Try the exact title, or add the year.</span>";
+        box.appendChild(e);
+        return;
+      }
+      hits.forEach(function(h){
+        var b = document.createElement("button");
+        b.type = "button"; b.className = "hit";
+        b.appendChild(posterNode(h));
+        var info = document.createElement("div");
+        info.className = "info";
+        var t = document.createElement("div");
+        t.className = "ft"; t.textContent = h.title + (h.year ? " (" + h.year + ")" : "");
+        info.appendChild(t);
+        if (h.blurb){
+          var d = document.createElement("div");
+          d.className = "fd"; d.textContent = h.blurb;
+          info.appendChild(d);
+        }
+        b.appendChild(info);
+        b.addEventListener("click", function(){ addFilm(h); });
+        box.appendChild(b);
+      });
+    })["catch"](function(err){
+      el("res-title").textContent = "Search failed";
+      el("res-list").innerHTML = '<div class="empty"><b>Couldn\u2019t search</b><span>' +
+        ((err && err.message) ? String(err.message).slice(0, 120) : "Check your connection and try again.") +
+        "</span></div>";
+    });
+  }
+
+  function addFilm(h){
+    var lowest = films.reduce(function(m, f){ return Math.min(m, f.pos); }, 0);
+    var f = { id:"f" + Date.now().toString(36) + Math.random().toString(36).slice(2, 7),
+              title:h.title, year:h.year, poster:h.poster, blurb:h.blurb,
+              by:state.me, watched:false, pos:lowest - 1 };
+    el("results").hidden = true;
+    el("cin-q").value = "";
+    filmStore.add(f).then(function(){ toast("Added \u2014 " + h.title); })
+      ["catch"](function(err){
+        if (err && /movies|relation|schema cache/i.test(err.message || "")){
+          cinReady = false; cinBanner();
+          toast("Make the movies table first");
+        } else toast("Couldn\u2019t add that one");
+      });
+  }
 
   // ---------- settings sheet ----------
   function openSettings(){
@@ -1518,13 +2035,15 @@ if ("serviceWorker" in navigator) {
         auth: { persistSession: false }
       });
       store = supaStore(client, cfg.pair);
-      store.watch(function(list){ state.tickets = list; renderAll(); });
+      store.watch(function(list){ state.tickets = list; renderAll(); if (view === "home") renderHome(); });
+      filmStore = filmStoreFor(client, cfg.pair);
+      filmStore.watch(function(l){ films = l; renderCinema(); });
       showBanner();
       alertsBanner();
       syncPreview();
       renderAll();
       el("setup").hidden = true;
-      el("app").hidden = false;
+      go("home");
     })["catch"](function(){
       el("setup").hidden = false;
       el("app").hidden = true;
@@ -1567,17 +2086,19 @@ if ("serviceWorker" in navigator) {
     };
   }
 
-  var demoWho = new URLSearchParams(location.search).get("demo");
+  demoWho = new URLSearchParams(location.search).get("demo");
   if (demoWho === "stinky" || demoWho === "pinky"){
     state.me = demoWho;
     store = demoStore();
-    store.watch(function(list){ state.tickets = list; renderAll(); });
+    store.watch(function(list){ state.tickets = list; renderAll(); if (view === "home") renderHome(); });
+    filmStore = demoFilmStore();
+    filmStore.watch(function(l){ films = l; renderCinema(); });
     el("banner").innerHTML = '<div class="banner"><b>Demo.</b> Saved on this device only. ' +
       'Swap <b>?demo=pinky</b> and <b>?demo=stinky</b> in the address to play both sides.</div>';
     syncPreview();
     renderAll();
     el("setup").hidden = true;
-    el("app").hidden = false;
+    go("home");
     return;
   }
 
@@ -1592,14 +2113,14 @@ if ("serviceWorker" in navigator) {
     return (v && v.u && v.k && v.p && v.me) ? v : null;
   }
   var seeded = readSeed();
-  if (seeded) saveCfg({ url:seeded.u, key:seeded.k, pair:seeded.p, me:seeded.me });
+  if (seeded) saveCfg({ url:seeded.u, key:seeded.k, pair:seeded.p, me:seeded.me, tmdb:seeded.t || "" });
 
   // opening a pair link while the app is already on screen only changes the hash,
   // so take the new pairing and restart rather than silently ignoring it
   window.addEventListener("hashchange", function(){
     var v = readSeed();
     if (!v) return;
-    saveCfg({ url:v.u, key:v.k, pair:v.p, me:v.me });
+    saveCfg({ url:v.u, key:v.k, pair:v.p, me:v.me, tmdb:v.t || "" });
     try { localStorage.removeItem(CACHE); } catch(e){}
     location.reload();
   });
@@ -1657,7 +2178,7 @@ if ("serviceWorker" in navigator) {
     } else {
       return setupError("That doesn't look like a pairing link. Copy the whole thing — it has a #p= in the middle.");
     }
-    var conf = { url:v.u, key:v.k, pair:v.p, me:v.me };
+    var conf = { url:v.u, key:v.k, pair:v.p, me:v.me, tmdb:v.t || "" };
     saveCfg(conf);
     try { localStorage.removeItem(CACHE); } catch(e){}
     start(conf);

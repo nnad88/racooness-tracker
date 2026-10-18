@@ -1,4 +1,4 @@
-# Racoonness Tracker
+# Racoonness
 
 An installable app for two phones. Real icon on the home screen, opens fullscreen,
 no browser bar. No App Store, no Play Store, no developer account.
@@ -47,6 +47,23 @@ anything. Tap the compass / *Open in Safari* button first. There is also no Shar
 sheet inside the installed app.
 
 You can bring the pairing links back up any time from the button at the top right.
+
+## The apps
+
+Opening Racoonness lands on a menu:
+
+- **Tracker** — the coupons you hand each other. Unchanged.
+- **Cinema** — a shared film list. Type a title, pick from the posters, and it joins
+  the queue with whoever added it named on it. Reorder with the arrows, tick one off
+  to move it to Watched, put it back or delete it from there.
+- **Gourmet** — not built yet.
+
+Cinema needs one more table in Supabase. The app notices it is missing and shows
+the SQL with a copy button — paste it into *SQL Editor* the same way as the first one.
+
+Posters and film data come from Cinemeta, which is open and needs no key or account.
+If that host is ever unreachable the search falls back to Wikipedia, which finds
+films reliably but carries no poster art.
 
 ## Lost the pairing on a device
 
