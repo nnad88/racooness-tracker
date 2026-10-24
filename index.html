@@ -385,8 +385,12 @@ h1.brand{font-size:clamp(44px,14.6vw,74px)}
 .fs-theirs{display:flex;align-items:center;justify-content:center;gap:9px;margin-top:16px;
   font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:#A992E8}
 .sheetfilm .give{margin-top:24px}
-.sheetfilm .cancel.danger{color:#FF7BA8}
-.sheetfilm .cancel.arm{color:var(--lemon)}
+.delbtn{width:100%;margin-top:11px;font-family:var(--fat);font-weight:400;font-size:19px;line-height:1;
+  background:none;color:#FF7BA8;border:3px solid #FF7BA8;border-radius:13px;padding:16px 14px;
+  box-shadow:0 5px 0 #7A2248}
+.delbtn:active{transform:translateY(3px);box-shadow:0 2px 0 #7A2248}
+.delbtn.arm{background:#E8156B;border-color:#E8156B;color:var(--cream);box-shadow:0 5px 0 #8C0A40}
+.delbtn.arm:active{box-shadow:0 2px 0 #8C0A40}
 
 /* ---------- search results ---------- */
 .results{position:fixed;inset:0;z-index:900;background:var(--grape);overflow-y:auto;
@@ -643,7 +647,7 @@ create policy "pair only" on public.tickets
     </div>
 
     <button class="give" id="fs-watch" type="button">Watched</button>
-    <button class="cancel danger" id="fs-del" type="button">Remove from the list</button>
+    <button class="delbtn" id="fs-del" type="button">Remove from the list</button>
   </div>
 </div>
 
