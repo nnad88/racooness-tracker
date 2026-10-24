@@ -1703,7 +1703,31 @@ if ("serviceWorker" in navigator) {
   }
 
   // ---------- cinema ----------
-  var films = [], filmStore = null, cinReady = false;
+  var films = [], filmStore = null, cinReady = false, scoresReady = true;
+
+  // Never swallow what the database said — a generic "couldn't save" hides the
+  // one thing that fixes it, which is usually a column that is not there yet.
+  function filmError(err, fallback){
+    var m = (err && (err.message || err.details || err.hint)) || "";
+    if (/rate_stinky|rate_pinky/i.test(m) || (/column/i.test(m) && /movies/i.test(m))){
+      scoresReady = false;
+      cinBanner();
+      toast("Scores need two new columns — run the SQL");
+      return;
+    }
+    // an access refusal also names the table, so check it before the table branch
+    if (/row-level security|policy/i.test(m)){
+      toast("Supabase refused that \u2014 check the movies policy");
+      return;
+    }
+    if (/movies|relation|schema cache/i.test(m)){
+      cinReady = false;
+      cinBanner();
+      toast("Make the movies table first");
+      return;
+    }
+    toast(m ? String(m).slice(0, 90) : fallback);
+  }
 
   var filmFromRow = function(r){
     return { id:r.id, title:r.title, year:r.year || "", poster:r.poster || "", blurb:r.blurb || "",
@@ -1724,6 +1748,7 @@ if ("serviceWorker" in navigator) {
       return client.from("movies").select("*").then(function(res){
         if (res.error) throw res.error;
         cinReady = true;
+        if (res.data && res.data.length) scoresReady = ("rate_stinky" in res.data[0]);
         var l = (res.data || []).map(filmFromRow);
         try { localStorage.setItem("racooness.films.v1", JSON.stringify(l)); } catch(e){}
         if (cb) cb(l);
@@ -1822,9 +1847,13 @@ if ("serviceWorker" in navigator) {
 
   function cinBanner(){
     var box = el("cin-banner");
-    if (!cinReady && !demoWho){
-      box.innerHTML = '<div class="banner"><b>One more table to make.</b> Cinema needs its own table in ' +
-        'Supabase. Open <em>SQL Editor</em>, run the block below, then pull down to refresh.' +
+    if ((!cinReady || !scoresReady) && !demoWho){
+      var lead = cinReady
+        ? '<b>Scores need two more columns.</b> Run this again in Supabase \u2014 it is safe on your ' +
+          'existing list and adds what is missing.'
+        : '<b>One more table to make.</b> Cinema needs its own table in Supabase. Open ' +
+          '<em>SQL Editor</em>, run the block below, then pull down to refresh.';
+      box.innerHTML = '<div class="banner">' + lead +
         '<pre class="sql" id="cin-sql">' + MOVIE_SQL + '</pre>' +
         '<button class="mini" id="cin-sql-copy" type="button">Copy the SQL</button></div>';
       var c = el("cin-sql-copy");
@@ -2042,7 +2071,7 @@ if ("serviceWorker" in navigator) {
           var patch = {};
           patch[field] = (mine === n) ? null : n;   // tapping your score again clears it
           filmStore.patch(f.id, patch).then(renderFilmSheet)
-            ["catch"](function(){ toast("Couldn't save that score"); });
+            ["catch"](function(err){ filmError(err, "Couldn't save that score"); });
         });
         scale.appendChild(b);
       })(i);
@@ -2057,7 +2086,7 @@ if ("serviceWorker" in navigator) {
     w.textContent = f.watched ? "Put back on the list" : "Watched";
     w.onclick = function(){
       filmStore.patch(f.id, { watched: !f.watched }).then(renderFilmSheet)
-        ["catch"](function(){ toast("Couldn't change that"); });
+        ["catch"](function(err){ filmError(err, "Couldn't change that"); });
     };
 
     var d = el("fs-del");
@@ -2075,7 +2104,7 @@ if ("serviceWorker" in navigator) {
         return;
       }
       filmStore.remove(f.id).then(function(){ closeFilm(); toast("Removed \u2014 " + f.title); })
-        ["catch"](function(){ toast("Couldn't remove that"); });
+        ["catch"](function(err){ filmError(err, "Couldn't remove that"); });
     };
   }
 
@@ -2128,12 +2157,7 @@ if ("serviceWorker" in navigator) {
     el("results").hidden = true;
     el("cin-q").value = "";
     filmStore.add(f).then(function(){ toast("Added \u2014 " + h.title); })
-      ["catch"](function(err){
-        if (err && /movies|relation|schema cache/i.test(err.message || "")){
-          cinReady = false; cinBanner();
-          toast("Make the movies table first");
-        } else toast("Couldn\u2019t add that one");
-      });
+      ["catch"](function(err){ filmError(err, "Couldn\u2019t add that one"); });
   }
 
   // ---------- settings sheet ----------
