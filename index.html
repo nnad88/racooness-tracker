@@ -330,12 +330,23 @@ h1.brand{font-size:clamp(44px,14.6vw,74px)}
 .film .info{flex:1;min-width:0;display:flex;flex-direction:column}
 .film .ft{font-family:var(--fat);font-weight:400;font-size:clamp(19px,5.8vw,24px);line-height:1;
   color:var(--cream);word-break:break-word}
-.film .fy{font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:#9D86E8;
-  margin-top:5px}
-.film .by{font-family:var(--mono);font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;
+.fy{font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:#9D86E8}
+.film .fy{margin-top:5px}
+.by{font-family:var(--mono);font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;
   color:var(--cream);background:var(--grape);border-radius:99px;padding:4px 10px;width:max-content}
-.film .by.pinky{background:var(--hot)}
+.by.pinky{background:var(--hot)}
+.fs-meta .by{background:var(--grape-d)}
+.fs-meta .by.pinky{background:var(--hot)}
 .film .foot{display:flex;align-items:center;gap:9px;margin-top:auto;padding-top:10px}
+.stars{display:flex;gap:7px;margin-left:auto;flex:none}
+.star{position:relative;width:36px;height:36px;display:grid;place-items:center}
+.star svg{position:absolute;inset:0;width:100%;height:100%}
+.star b{position:relative;font-family:var(--fat);font-weight:400;font-size:14px;line-height:1;
+  color:var(--cream);padding-top:1px}
+.star.stinky svg path{fill:var(--grape);stroke:var(--grape)}
+.star.pinky svg path{fill:var(--hot);stroke:var(--hot)}
+.star.none svg path{fill:none;stroke:#5B4A9E}
+.star.none b{color:#5B4A9E}
 .watchbtn{margin-left:auto;flex:none;font-family:var(--fat);font-weight:400;font-size:14px;line-height:1;
   background:#2FC2AE;color:#05302A;border-radius:99px;padding:9px 15px;box-shadow:0 3px 0 #1C8C7D}
 .watchbtn:active{transform:translateY(2px);box-shadow:0 1px 0 #1C8C7D}
@@ -346,9 +357,36 @@ h1.brand{font-size:clamp(44px,14.6vw,74px)}
 .film .acts button[disabled]{opacity:.3}
 .film.gone{opacity:.62}
 .film.gone .poster{filter:grayscale(1)}
-.film.gone .ft{text-decoration:line-through;color:#A992E8;font-size:clamp(16px,4.6vw,19px)}
+.film.gone .ft{color:#D6C6FF}
 .film.gone .by{background:#4A3B8C;color:#D6C6FF}
 .film.gone .by.pinky{background:#8C3B6B;color:#FFD6EC}
+
+/* ---------- one film, up close ---------- */
+.sheetfilm{position:fixed;inset:0;z-index:910;background:var(--grape);overflow-y:auto;
+  padding:calc(14px + env(safe-area-inset-top,0px)) 16px calc(32px + env(safe-area-inset-bottom,0px))}
+.sheetfilm[hidden]{display:none}
+.fs-inner{max-width:420px;margin:0 auto}
+.fs-head{display:flex;justify-content:flex-end;margin-bottom:10px}
+.fs-poster{width:min(230px,62vw);aspect-ratio:2/3;margin:0 auto;border-radius:12px;overflow:hidden;
+  background:#1C8C7D;display:grid;place-items:center;text-align:center;box-shadow:0 10px 0 var(--grape-dd)}
+.fs-poster img{width:100%;height:100%;object-fit:cover;display:block}
+.fs-poster span{font-family:var(--fat);font-size:20px;line-height:1.05;color:#05302A;padding:14px}
+.sheetfilm h2{font-family:var(--fat);font-weight:400;font-size:clamp(26px,8vw,36px);line-height:.98;
+  margin:22px 0 0;color:var(--cream);text-wrap:balance;text-align:center}
+.fs-meta{display:flex;gap:8px;justify-content:center;align-items:center;margin-top:12px;flex-wrap:wrap}
+.fs-blurb{font-family:var(--mono);font-size:11.5px;line-height:1.6;color:#C3ADFF;margin:16px 0 0;text-align:center}
+.fs-rate{margin-top:26px}
+.fs-rate .flab{text-align:center}
+.scale{display:grid;grid-template-columns:repeat(5,1fr);gap:7px}
+.scale button{font-family:var(--fat);font-weight:400;font-size:17px;line-height:1;background:var(--grape-d);
+  color:#B49BF5;border:3px solid var(--grape-dd);border-radius:12px;padding:12px 0}
+.scale button[aria-pressed="true"]{background:var(--grape);color:var(--cream);border-color:var(--cream)}
+.sheetfilm.pinkme .scale button[aria-pressed="true"]{background:var(--hot);border-color:var(--cream)}
+.fs-theirs{display:flex;align-items:center;justify-content:center;gap:9px;margin-top:16px;
+  font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:#A992E8}
+.sheetfilm .give{margin-top:24px}
+.sheetfilm .cancel.danger{color:#FF7BA8}
+.sheetfilm .cancel.arm{color:var(--lemon)}
 
 /* ---------- search results ---------- */
 .results{position:fixed;inset:0;z-index:900;background:var(--grape);overflow-y:auto;
@@ -584,11 +622,29 @@ create policy "pair only" on public.tickets
     <div class="shead"><b>Up next</b><i></i><span id="cin-count"></span></div>
     <div id="cin-list"></div>
     <div id="cin-seenwrap" hidden>
-      <div class="shead"><b>Watched</b><i></i><span id="cin-seencount"></span>
-        <button class="clearbtn" id="cin-clear" type="button">Clear</button></div>
+      <div class="shead"><b>Watched</b><i></i><span id="cin-seencount"></span></div>
       <div id="cin-seen"></div>
     </div>
   </main>
+</div>
+
+<div class="sheetfilm" id="filmsheet" hidden role="dialog" aria-modal="true" aria-labelledby="fs-title">
+  <div class="fs-inner">
+    <div class="fs-head"><button class="x" id="fs-close" type="button" aria-label="Close">✕</button></div>
+    <div class="fs-poster" id="fs-poster"></div>
+    <h2 id="fs-title"></h2>
+    <div class="fs-meta" id="fs-meta"></div>
+    <p class="fs-blurb" id="fs-blurb" hidden></p>
+
+    <div class="fs-rate">
+      <span class="flab" id="fs-ratelab">Your score</span>
+      <div class="scale" id="fs-scale" role="group" aria-labelledby="fs-ratelab"></div>
+      <div class="fs-theirs" id="fs-theirs"></div>
+    </div>
+
+    <button class="give" id="fs-watch" type="button">Watched</button>
+    <button class="cancel danger" id="fs-del" type="button">Remove from the list</button>
+  </div>
 </div>
 
 <div class="results" id="results" hidden role="dialog" aria-modal="true" aria-label="Pick the film">
@@ -1533,7 +1589,8 @@ if ("serviceWorker" in navigator) {
   el("open-send").addEventListener("click", openSend);
   el("ov-close").addEventListener("click", closeSend);
   document.addEventListener("keydown", function(e){
-    if (e.key === "Escape" && !el("accept").hidden) hideAccept();
+    if (e.key === "Escape" && !el("filmsheet").hidden) closeFilm();
+    else if (e.key === "Escape" && !el("accept").hidden) hideAccept();
     else if (e.key === "Escape" && !el("enjoy").hidden) hideEnjoy();
     else if (e.key === "Escape" && !el("ov").hidden) closeSend();
   });
@@ -1603,32 +1660,13 @@ if ("serviceWorker" in navigator) {
   el("home-who").addEventListener("click", openSettings);
   el("cin-who").addEventListener("click", openSettings);
   el("res-close").addEventListener("click", function(){ el("results").hidden = true; });
+  el("fs-close").addEventListener("click", closeFilm);
   el("cin-add").addEventListener("click", function(){
     var q = el("cin-q").value.trim();
     if (q) openResults(q);
   });
   el("cin-q").addEventListener("keydown", function(e){
     if (e.key === "Enter"){ e.preventDefault(); var q = el("cin-q").value.trim(); if (q) openResults(q); }
-  });
-  var cinClearTimer = null;
-  el("cin-clear").addEventListener("click", function(){
-    var b = el("cin-clear");
-    if (!b.classList.contains("arm")){
-      b.classList.add("arm"); b.textContent = "Delete all?";
-      clearTimeout(cinClearTimer);
-      cinClearTimer = setTimeout(function(){ b.classList.remove("arm"); b.textContent = "Clear"; }, 3500);
-      return;
-    }
-    clearTimeout(cinClearTimer);
-    b.disabled = true;
-    films.filter(function(f){ return f.watched; }).reduce(function(c, f){
-      return c.then(function(){ return filmStore.remove(f.id); });
-    }, Promise.resolve()).then(function(){
-      b.disabled = false; b.classList.remove("arm"); b.textContent = "Clear";
-    })["catch"](function(){
-      b.disabled = false; b.classList.remove("arm"); b.textContent = "Clear";
-      toast("Couldn't clear those");
-    });
   });
   // the tracker's own back-to-home button
   var homeBtn = document.createElement("button");
@@ -1665,12 +1703,16 @@ if ("serviceWorker" in navigator) {
 
   var filmFromRow = function(r){
     return { id:r.id, title:r.title, year:r.year || "", poster:r.poster || "", blurb:r.blurb || "",
-             by:r.added_by, watched:!!r.watched, pos:r.pos || 0 };
+             by:r.added_by, watched:!!r.watched, pos:r.pos || 0,
+             rate:{ stinky:r.rate_stinky == null ? null : Number(r.rate_stinky),
+                    pinky: r.rate_pinky  == null ? null : Number(r.rate_pinky) } };
   };
   var filmToRow = function(f, pair){
     return { id:f.id, pair:pair, title:f.title, year:f.year, poster:f.poster, blurb:f.blurb,
-             added_by:f.by, watched:f.watched, pos:f.pos };
+             added_by:f.by, watched:f.watched, pos:f.pos,
+             rate_stinky:f.rate ? f.rate.stinky : null, rate_pinky:f.rate ? f.rate.pinky : null };
   };
+  var rateOf = function(f, who){ return (f.rate || {})[who]; };
 
   function filmStoreFor(client, pair){
     var cb = null;
@@ -1720,6 +1762,9 @@ if ("serviceWorker" in navigator) {
           var n = Object.assign({}, f);
           if ("watched" in fields) n.watched = fields.watched;
           if ("pos" in fields) n.pos = fields.pos;
+          n.rate = Object.assign({}, n.rate);
+          if ("rate_stinky" in fields) n.rate.stinky = fields.rate_stinky;
+          if ("rate_pinky" in fields) n.rate.pinky = fields.rate_pinky;
           return n;
         });
         save(); return Promise.resolve();
@@ -1800,6 +1845,8 @@ if ("serviceWorker" in navigator) {
     "  pos        integer not null default 0,\n" +
     "  created_at timestamptz not null default now()\n" +
     ");\n\n" +
+    "alter table public.movies add column if not exists rate_stinky integer;\n" +
+    "alter table public.movies add column if not exists rate_pinky  integer;\n\n" +
     "alter table public.movies enable row level security;\n\n" +
     "drop policy if exists \"pair only\" on public.movies;\n" +
     "create policy \"pair only\" on public.movies\n" +
@@ -1827,6 +1874,7 @@ if ("serviceWorker" in navigator) {
 
   function renderCinema(){
     if (!state.me) return;
+    if (fsId && !el("filmsheet").hidden) renderFilmSheet();
     var unseen = films.filter(function(f){ return !f.watched; }).sort(function(a, b){ return a.pos - b.pos; });
     var seen = films.filter(function(f){ return f.watched; }).sort(function(a, b){ return b.pos - a.pos; });
 
@@ -1853,9 +1901,30 @@ if ("serviceWorker" in navigator) {
     cinBanner();
   }
 
+  var STAR_PATH = "M50 6l13 29 31 3-23 21 6 31-27-16-27 16 6-31L6 38l31-3z";
+  function starNode(who, val){
+    var sp = document.createElement("span");
+    sp.className = "star " + who + (val == null ? " none" : "");
+    sp.setAttribute("title", PEOPLE[who].short + (val == null ? ": not rated" : ": " + val + " out of 10"));
+    sp.innerHTML = '<svg viewBox="0 0 100 100" aria-hidden="true"><path d="' + STAR_PATH +
+      '" stroke-width="9" stroke-linejoin="round"/></svg>';
+    var b = document.createElement("b");
+    b.textContent = val == null ? "–" : String(val);
+    sp.appendChild(b);
+    return sp;
+  }
+  function starsFor(f){
+    var wrap = document.createElement("div");
+    wrap.className = "stars";
+    wrap.appendChild(starNode("stinky", rateOf(f, "stinky")));
+    wrap.appendChild(starNode("pinky", rateOf(f, "pinky")));
+    return wrap;
+  }
+
   function filmNode(f, o){
     var n = document.createElement("div");
     n.className = "film" + (o.watched ? " gone" : "");
+    n.addEventListener("click", function(){ openFilm(f.id); });
 
     n.appendChild(posterNode(f));
 
@@ -1879,8 +1948,10 @@ if ("serviceWorker" in navigator) {
       var w = document.createElement("button");
       w.type = "button"; w.className = "watchbtn"; w.textContent = "Watched";
       w.setAttribute("aria-label", "Mark watched: " + f.title);
-      w.addEventListener("click", function(){ filmStore.patch(f.id, { watched:true }); });
+      w.addEventListener("click", function(e){ e.stopPropagation(); filmStore.patch(f.id, { watched:true }); });
       foot.appendChild(w);
+    } else {
+      foot.appendChild(starsFor(f));
     }
     info.appendChild(foot);
     n.appendChild(info);
@@ -1888,28 +1959,16 @@ if ("serviceWorker" in navigator) {
     var acts = document.createElement("div");
     acts.className = "acts";
     if (o.watched){
-      var back = document.createElement("button");
-      back.type = "button"; back.textContent = "↩";
-      back.setAttribute("aria-label", "Put back on the list: " + f.title);
-      back.addEventListener("click", function(){ filmStore.patch(f.id, { watched:false }); });
-      var del = document.createElement("button");
-      del.type = "button"; del.textContent = "✕";
-      del.setAttribute("aria-label", "Remove: " + f.title);
-      del.addEventListener("click", function(){
-        if (!del.dataset.arm){ del.dataset.arm = "1"; del.textContent = "?"; setTimeout(function(){
-          del.dataset.arm = ""; del.textContent = "✕"; }, 3000); return; }
-        filmStore.remove(f.id);
-      });
-      acts.appendChild(back); acts.appendChild(del);
+      // nothing here: tapping the row opens the sheet, which holds these actions
     } else {
       var up = document.createElement("button");
       up.type = "button"; up.textContent = "▲"; up.disabled = !!o.first;
       up.setAttribute("aria-label", "Move up: " + f.title);
-      up.addEventListener("click", function(){ swapFilm(o.list, f, -1); });
+      up.addEventListener("click", function(e){ e.stopPropagation(); swapFilm(o.list, f, -1); });
       var dn = document.createElement("button");
       dn.type = "button"; dn.textContent = "▼"; dn.disabled = !!o.last;
       dn.setAttribute("aria-label", "Move down: " + f.title);
-      dn.addEventListener("click", function(){ swapFilm(o.list, f, 1); });
+      dn.addEventListener("click", function(e){ e.stopPropagation(); swapFilm(o.list, f, 1); });
       acts.appendChild(up); acts.appendChild(dn);
     }
     n.appendChild(acts);
@@ -1923,6 +1982,97 @@ if ("serviceWorker" in navigator) {
     var a = f.pos, b = other.pos;
     if (a === b) { a = i; b = j; }
     filmStore.patch(f.id, { pos:b }).then(function(){ return filmStore.patch(other.id, { pos:a }); });
+  }
+
+  var fsId = null;
+  function openFilm(id){
+    fsId = id;
+    renderFilmSheet();
+    el("filmsheet").hidden = false;
+  }
+  function closeFilm(){ fsId = null; el("filmsheet").hidden = true; }
+
+  function renderFilmSheet(){
+    var f = films.filter(function(x){ return x.id === fsId; })[0];
+    if (!f){ closeFilm(); return; }
+    var them = other(state.me);
+
+    el("filmsheet").classList.toggle("pinkme", state.me === "pinky");
+
+    var pw = el("fs-poster");
+    pw.innerHTML = "";
+    var pn = posterNode(f);
+    while (pn.firstChild) pw.appendChild(pn.firstChild);
+
+    el("fs-title").textContent = f.title;
+
+    var meta = el("fs-meta");
+    meta.innerHTML = "";
+    if (f.year){
+      var y = document.createElement("span");
+      y.className = "fy"; y.textContent = f.year;
+      meta.appendChild(y);
+    }
+    var by = document.createElement("span");
+    by.className = "by" + (f.by === "pinky" ? " pinky" : "");
+    by.textContent = "Added by " + (PEOPLE[f.by] ? PEOPLE[f.by].short : f.by);
+    meta.appendChild(by);
+
+    var bl = el("fs-blurb");
+    bl.textContent = f.blurb || "";
+    bl.hidden = !f.blurb;
+
+    // only your own score is editable; theirs is shown as it stands
+    var mine = rateOf(f, state.me);
+    var scale = el("fs-scale");
+    scale.innerHTML = "";
+    for (var i = 1; i <= 10; i++){
+      (function(n){
+        var b = document.createElement("button");
+        b.type = "button";
+        b.textContent = String(n);
+        b.setAttribute("aria-pressed", String(mine === n));
+        b.setAttribute("aria-label", n + " out of 10");
+        b.addEventListener("click", function(){
+          var field = state.me === "pinky" ? "rate_pinky" : "rate_stinky";
+          var patch = {};
+          patch[field] = (mine === n) ? null : n;   // tapping your score again clears it
+          filmStore.patch(f.id, patch).then(renderFilmSheet)
+            ["catch"](function(){ toast("Couldn't save that score"); });
+        });
+        scale.appendChild(b);
+      })(i);
+    }
+
+    var theirs = el("fs-theirs");
+    theirs.innerHTML = "";
+    theirs.appendChild(document.createTextNode(PEOPLE[them].short + "\u2019s score"));
+    theirs.appendChild(starNode(them, rateOf(f, them)));
+
+    var w = el("fs-watch");
+    w.textContent = f.watched ? "Put back on the list" : "Watched";
+    w.onclick = function(){
+      filmStore.patch(f.id, { watched: !f.watched }).then(renderFilmSheet)
+        ["catch"](function(){ toast("Couldn't change that"); });
+    };
+
+    var d = el("fs-del");
+    d.classList.remove("arm");
+    d.textContent = "Remove from the list";
+    d.onclick = function(){
+      if (!d.classList.contains("arm")){
+        d.classList.add("arm");
+        d.textContent = "Really remove it?";
+        setTimeout(function(){
+          if (!d) return;
+          d.classList.remove("arm");
+          d.textContent = "Remove from the list";
+        }, 3500);
+        return;
+      }
+      filmStore.remove(f.id).then(function(){ closeFilm(); toast("Removed \u2014 " + f.title); })
+        ["catch"](function(){ toast("Couldn't remove that"); });
+    };
   }
 
   function openResults(q){
