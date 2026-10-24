@@ -54,7 +54,10 @@ input,textarea{font:inherit}
 
 /* ---------- title ---------- */
 .top{padding:16px 13px 0}
-.toprow{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:6px}
+/* the title sits after this in the DOM and its line-height:.78 lets the glyph box
+   reach up over the row, swallowing taps meant for the buttons */
+.toprow{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:6px;
+  position:relative;z-index:2}
 .toprow>*:only-child{margin-left:auto}
 .who.back{color:var(--cream)}
 .who{font-family:var(--mono);font-size:9.5px;letter-spacing:.08em;background:var(--grape-d);color:var(--lemon);

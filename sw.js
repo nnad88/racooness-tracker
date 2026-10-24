@@ -1,6 +1,6 @@
 // Cache the app shell so the home-screen icon opens instantly and works offline.
 // Supabase calls are never cached — they always go to the network.
-const CACHE = "racooness-v18";
+const CACHE = "racooness-v19";
 // caches.keys() lists every cache on the ORIGIN, not just this worker's scope, and
 // nnad88.github.io hosts other apps too. Sweeping "everything that isn't mine" would
 // delete theirs — and theirs would delete this one right back, which leaves a shell
